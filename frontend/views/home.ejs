@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Home</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <h1>Product Catalog</h1>
+    <a href="/cart">View Cart</a>
+    <form method="GET" action="/">
+        <label for="category">Category:</label>
+        <select name="category" id="category">
+            <option value="">All</option>
+            <!-- Add options for categories dynamically -->
+            <option value="1" <% if (selectedCategory == '1') { %>selected<% } %>>Plante d'extérieure</option>
+            <option value="2" <% if (selectedCategory == '2') { %>selected<% } %>>Plante d'intérieure</option>
+            <option value="3" <% if (selectedCategory == '3') { %>selected<% } %>>Bouquets</option>
+            <option value="4" <% if (selectedCategory == '4') { %>selected<% } %>>Accessoires</option>
+        </select>
+
+        <label for="color">Color:</label>
+        <select name="color" id="color">
+            <option value="">All</option>
+            <!-- Add options for colors dynamically -->
+            <option value="1" <% if (selectedColor == '1') { %>selected<% } %>>Rouge</option>
+            <option value="2" <% if (selectedColor == '2') { %>selected<% } %>>Orange</option>
+            <option value="3" <% if (selectedColor == '3') { %>selected<% } %>>Jaune</option>
+            <option value="4" <% if (selectedColor == '4') { %>selected<% } %>>Blanc</option>
+            <option value="5" <% if (selectedColor == '5') { %>selected<% } %>>Rose</option>
+            <option value="6" <% if (selectedColor == '6') { %>selected<% } %>>Violet</option>
+            <option value="7" <% if (selectedColor == '7') { %>selected<% } %>>Vert</option>
+            <option value="8" <% if (selectedColor == '8') { %>selected<% } %>>Bleu</option>
+        </select>
+
+        <button type="submit">Filter</button>
+    </form>
+
+    <ul>
+        <% if (products.length > 0) { %>
+            <% products.forEach(product => { %>
+                <li>
+                    <a href="/products/<%= product.id_product %>">
+                        <img src="<%= product.images ? product.images.split(',')[0] : '/images/no-image.png' %>" alt="<%= product.name %>">
+                        <h2><%= product.name %></h2>
+                        <p><%= product.price %> <%= product.currency %></p>
+                    </a>
+                    <form action="/cart/add/<%= product.id_product %>" method="POST">
+                        <button type="submit">Add to Cart</button>
+                    </form>
+                </li>
+            <% }) %>
+        <% } else { %>
+            <p>No products found.</p>
+        <% } %>
+    </ul>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

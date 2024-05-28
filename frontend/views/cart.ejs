@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <h1>Shopping Cart</h1>
+    <% if (cart.length > 0) { %>
+        <ul>
+            <% cart.forEach(item => { %>
+                <li><%= item.name %> - <%= item.price %> <%= item.currency %></li>
+            <% }) %>
+        </ul>
+    <% } else { %>
+        <p>Your cart is empty.</p>
+    <% } %>
+    <a href="/products">Back to Products</a>
+</body>
+</html>
