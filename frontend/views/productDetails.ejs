@@ -1,9 +1,7 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= product.name %></title>
+    <title>Product Details</title>
     <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
@@ -11,9 +9,13 @@
     <img src="<%= product.image_url %>" alt="<%= product.name %>">
     <p><%= product.description %></p>
     <p>Price: <%= product.price %> <%= product.currency %></p>
+
     <form action="/cart/add/<%= product.id_product %>" method="POST">
+        <label for="quantity">Quantity:</label>
+        <input type="number" name="quantity" id="quantity" value="1" min="1">
         <button type="submit">Add to Cart</button>
     </form>
-    <a href="/products">Back to Catalog</a>
+
+    <a href="/products">Back to Products</a>
 </body>
 </html>

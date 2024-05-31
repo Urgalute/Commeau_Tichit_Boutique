@@ -1,22 +1,27 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shopping Cart</title>
+    <title>Cart</title>
     <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
     <h1>Shopping Cart</h1>
-    <% if (cart.length > 0) { %>
-        <ul>
-            <% cart.forEach(item => { %>
-                <li><%= item.name %> - <%= item.price %> <%= item.currency %></li>
+    <a href="/">Continue Shopping</a>
+    <ul>
+        <% if (cartItems.length === 0) { %>
+            <li>Your cart is empty</li>
+        <% } else { %>
+            <% cartItems.forEach(item => { %>
+                <li>
+                    <p><%= item.name %> - <%= item.price %> <%= item.currency %></p>
+                    <p>Quantity: <%= item.quantity %></p>
+                    <img src="<%= item.image_url %>" alt="<%= item.name %>">
+                    <form action="/cart/remove/<%= item.id_product %>" method="POST">
+                        <button type="submit">Remove</button>
+                    </form>
+                </li>
             <% }) %>
-        </ul>
-    <% } else { %>
-        <p>Your cart is empty.</p>
-    <% } %>
-    <a href="/products">Back to Products</a>
+        <% } %>
+    </ul>
 </body>
 </html>
