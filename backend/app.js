@@ -4,6 +4,7 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const productRoutes = require('./routes/productRoutes');
 const cartRoutes = require('./routes/cartRoutes');
+const addressRoutes = require('./routes/addressRoutes');
 
 const app = express();
 
@@ -22,6 +23,12 @@ app.use(express.static(path.join(__dirname, '../frontend/public')));
 
 app.use('/', productRoutes);
 app.use('/cart', cartRoutes);
+
+app.use('/addresses', addressRoutes);
+
+app.get('/payment', (req, res) => {
+    res.render('payment', { selectedAddress: req.session.selectedAddress });
+});
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

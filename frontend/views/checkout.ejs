@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Checkout</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <h1>Checkout</h1>
+    <form action="/cart/checkout" method="POST">
+        <h2>Select a Shipping Address</h2>
+        <select name="address" required>
+            <% addresses.forEach((address, index) => { %>
+                <option value="<%= index %>"><%= address.address_line1 %>, <%= address.city %>, <%= address.state %>, <%= address.postal_code %>, <%= address.country %></option>
+            <% }) %>
+        </select>
+        <button type="submit">Place Order</button>
+    </form>
+</body>
+</html>
