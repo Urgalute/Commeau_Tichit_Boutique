@@ -17,15 +17,11 @@ exports.getAllProducts = (req, res) => {
             return res.status(500).json({ message: 'Error fetching categories', error: err });
         }
 
-        console.log("Fetched categories:", categories);  // Debugging line
-
         db.query(colorsQuery, (err, colors) => {
             if (err) {
                 console.error(err);
                 return res.status(500).json({ message: 'Error fetching colors', error: err });
             }
-
-            console.log("Fetched colors:", colors);  // Debugging line
 
             db.query(query, (err, results) => {
                 if (err) {
@@ -72,15 +68,11 @@ exports.filterProducts = (req, res) => {
             return res.status(500).json({ message: 'Error fetching categories', error: err });
         }
 
-        console.log("Fetched categories:", categories);  // Debugging line
-
         db.query(colorsQuery, (err, colors) => {
             if (err) {
                 console.error(err);
                 return res.status(500).json({ message: 'Error fetching colors', error: err });
-            }
-
-            console.log("Fetched colors:", colors);  // Debugging line
+        }
 
             db.query(query, (err, results) => {
                 if (err) {
@@ -121,6 +113,7 @@ exports.getProductById = (req, res) => {
             }
 
             const product = result[0];
+            console.log("Fetched product details:", product);  // Debugging line
 
             // Fetch random products
             const randomProductsQuery = `
@@ -138,6 +131,7 @@ exports.getProductById = (req, res) => {
                     console.error('Error fetching random products:', err);
                     res.status(500).json({ message: 'Error fetching random products', error: err });
                 } else {
+                    console.log("Fetched random products:", randomProducts);  // Debugging line
                     res.render('productDetails', { product, randomProducts });
                 }
             });

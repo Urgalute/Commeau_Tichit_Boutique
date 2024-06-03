@@ -2,12 +2,14 @@ const express = require('express');
 const session = require('express-session');
 const path = require('path');
 const bodyParser = require('body-parser');
-const productRoutes = require('./routes/productRoutes');
-const cartRoutes = require('./routes/cartRoutes');
-const addressRoutes = require('./routes/addressRoutes');
-const favoriteRoutes = require('./routes/favoriteRoutes');
 
 const app = express();
+
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+app.use(express.static(path.join(__dirname, '../frontend/public')));
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, '../frontend/views'));
 
 app.use(session({
     secret: 'your-secret-key',
@@ -15,17 +17,16 @@ app.use(session({
     saveUninitialized: true
 }));
 
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
-
-app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, '../frontend/views'));
-app.use(express.static(path.join(__dirname, '../frontend/public')));
-
+const productRoutes = require('./routes/productRoutes');
 app.use('/', productRoutes);
+
+const cartRoutes = require('./routes/cartRoutes');
 app.use('/cart', cartRoutes);
+
+const favoriteRoutes = require('./routes/favoriteRoutes');
 app.use('/favorites', favoriteRoutes);
 
+const addressRoutes = require('./routes/addressRoutes');
 app.use('/addresses', addressRoutes);
 
 app.get('/payment', (req, res) => {
