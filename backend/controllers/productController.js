@@ -1,23 +1,5 @@
 const db = require('../config/db');
 
-const categories = [
-    { id: 1, name: "Plante d'extérieure" },
-    { id: 2, name: "Plante d'intérieure" },
-    { id: 3, name: "Bouquets" },
-    { id: 4, name: "Accessoires" }
-];
-
-const colors = [
-    { id: 1, name: 'Rouge' },
-    { id: 2, name: 'Orange' },
-    { id: 3, name: 'Jaune' },
-    { id: 4, name: 'Blanc' },
-    { id: 5, name: 'Rose' },
-    { id: 6, name: 'Violet' },
-    { id: 7, name: 'Vert' },
-    { id: 8, name: 'Bleu' }
-];
-
 exports.getAllProducts = (req, res) => {
     const query = `
         SELECT product.*, GROUP_CONCAT(product_images.image_url) AS images
@@ -26,24 +8,39 @@ exports.getAllProducts = (req, res) => {
         GROUP BY product.id_product;
     `;
 
-    db.query(query, (err, results) => {
+    const categoriesQuery = 'SELECT * FROM category';
+    const colorsQuery = 'SELECT * FROM color';
+
+    db.query(categoriesQuery, (err, categories) => {
         if (err) {
             console.error(err);
-            return res.render('home', {
-                products: [],
-                selectedCategory: '',
-                selectedColor: '',
-                categories: categories,
-                colors: colors
-            });
+            return res.status(500).json({ message: 'Error fetching categories', error: err });
         }
 
-        res.render('home', {
-            products: results,
-            selectedCategory: '',
-            selectedColor: '',
-            categories: categories,
-            colors: colors
+        console.log("Fetched categories:", categories);  // Debugging line
+
+        db.query(colorsQuery, (err, colors) => {
+            if (err) {
+                console.error(err);
+                return res.status(500).json({ message: 'Error fetching colors', error: err });
+            }
+
+            console.log("Fetched colors:", colors);  // Debugging line
+
+            db.query(query, (err, results) => {
+                if (err) {
+                    console.error(err);
+                    return res.status(500).json({ message: 'Error fetching products', error: err });
+                }
+
+                res.render('home', {
+                    products: results,
+                    selectedCategory: '',
+                    selectedColor: '',
+                    categories: categories,
+                    colors: colors
+                });
+            });
         });
     });
 };
@@ -66,24 +63,39 @@ exports.filterProducts = (req, res) => {
 
     query += ' GROUP BY product.id_product';
 
-    db.query(query, (err, results) => {
+    const categoriesQuery = 'SELECT * FROM category';
+    const colorsQuery = 'SELECT * FROM color';
+
+    db.query(categoriesQuery, (err, categories) => {
         if (err) {
             console.error(err);
-            return res.render('home', {
-                products: [],
-                selectedCategory: category || '',
-                selectedColor: color || '',
-                categories: categories,
-                colors: colors
-            });
+            return res.status(500).json({ message: 'Error fetching categories', error: err });
         }
 
-        res.render('home', {
-            products: results,
-            selectedCategory: category || '',
-            selectedColor: color || '',
-            categories: categories,
-            colors: colors
+        console.log("Fetched categories:", categories);  // Debugging line
+
+        db.query(colorsQuery, (err, colors) => {
+            if (err) {
+                console.error(err);
+                return res.status(500).json({ message: 'Error fetching colors', error: err });
+            }
+
+            console.log("Fetched colors:", colors);  // Debugging line
+
+            db.query(query, (err, results) => {
+                if (err) {
+                    console.error(err);
+                    return res.status(500).json({ message: 'Error fetching products', error: err });
+                }
+
+                res.render('home', {
+                    products: results,
+                    selectedCategory: category || '',
+                    selectedColor: color || '',
+                    categories: categories,
+                    colors: colors
+                });
+            });
         });
     });
 };
@@ -92,7 +104,7 @@ exports.getProductById = (req, res) => {
     const productId = req.params.id;
 
     const query = `
-        SELECT product.id_product, product.name, product.description, product.price, product.currency, product_images.image_url
+        SELECT product.id_product, product.name, product.description, product.price, product.currency, GROUP_CONCAT(product_images.image_url) AS images
         FROM product
         LEFT JOIN product_images ON product.id_product = product_images.product_id
         WHERE product.id_product = ?
@@ -107,7 +119,28 @@ exports.getProductById = (req, res) => {
             if (result.length === 0) {
                 return res.status(404).json({ message: 'Product not found' });
             }
-            res.render('productDetails', { product: result[0] });
+
+            const product = result[0];
+
+            // Fetch random products
+            const randomProductsQuery = `
+                SELECT product.id_product, product.name, product.price, product.currency, GROUP_CONCAT(product_images.image_url) AS images
+                FROM product
+                LEFT JOIN product_images ON product.id_product = product_images.product_id
+                WHERE product.id_product != ?
+                GROUP BY product.id_product
+                ORDER BY RAND()
+                LIMIT 5
+            `;
+
+            db.query(randomProductsQuery, [product.id_product], (err, randomProducts) => {
+                if (err) {
+                    console.error('Error fetching random products:', err);
+                    res.status(500).json({ message: 'Error fetching random products', error: err });
+                } else {
+                    res.render('productDetails', { product, randomProducts });
+                }
+            });
         }
     });
 };

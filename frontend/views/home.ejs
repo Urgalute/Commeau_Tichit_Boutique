@@ -12,7 +12,7 @@
         <select name="category" id="category">
             <option value="">All</option>
             <% categories.forEach(category => { %>
-                <option value="<%= category.id %>" <% if (selectedCategory == category.id) { %>selected<% } %>><%= category.name %></option>
+                <option value="<%= category.id_category %>" <% if (selectedCategory == category.id) { %>selected<% } %>><%= category.label %></option>
             <% }) %>
         </select>
 
@@ -20,7 +20,7 @@
         <select name="color" id="color">
             <option value="">All</option>
             <% colors.forEach(color => { %>
-                <option value="<%= color.id %>" <% if (selectedColor == color.id) { %>selected<% } %>><%= color.name %></option>
+                <option value="<%= color.id_color %>" <% if (selectedColor == color.id) { %>selected<% } %>><%= color.label %></option>
             <% }) %>
         </select>
 
