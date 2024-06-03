@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
-    <h1>Votre Panier</h1>
+    <h1>Your Cart</h1>
     <ul>
         <% cartItems.forEach(item => { %>
             <li>
@@ -18,6 +18,14 @@
                 <% } %>
                 <form action="/cart/remove/<%= item.id_product %>" method="POST">
                     <button type="submit">Remove</button>
+                </form>
+                <form action="/cart/update/<%= item.id_product %>" method="POST">
+                    <label for="quantity">Quantity:</label>
+                    <select name="quantity" onchange="this.form.submit()">
+                        <% for (let i = 1; i <= 10; i++) { %>
+                            <option value="<%= i %>" <% if (i === item.quantity) { %>selected<% } %>><%= i %></option>
+                        <% } %>
+                    </select>
                 </form>
             </li>
         <% }) %>

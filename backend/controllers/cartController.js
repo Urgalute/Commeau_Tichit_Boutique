@@ -117,3 +117,22 @@ exports.removeFromCart = (req, res) => {
 
     res.redirect('/cart');
 }
+
+exports.updateQuantity = (req, res) => {
+    const productId = req.params.id;
+    const quantity = parseInt(req.body.quantity, 10);
+
+    if (!req.session.cart) {
+        req.session.cart = [];
+    }
+
+    const productIndex = req.session.cart.findIndex(item => item.productId == productId);
+
+    if (productIndex !== -1 && quantity > 0) {
+        req.session.cart[productIndex].quantity = quantity;
+    } else if (quantity <= 0) {
+        req.session.cart = req.session.cart.filter(item => item.productId != productId);
+    }
+
+    res.redirect('/cart');
+};
