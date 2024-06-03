@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const productRoutes = require('./routes/productRoutes');
 const cartRoutes = require('./routes/cartRoutes');
 const addressRoutes = require('./routes/addressRoutes');
+const favoriteRoutes = require('./routes/favoriteRoutes');
 
 const app = express();
 
@@ -23,6 +24,7 @@ app.use(express.static(path.join(__dirname, '../frontend/public')));
 
 app.use('/', productRoutes);
 app.use('/cart', cartRoutes);
+app.use('/favorites', favoriteRoutes);
 
 app.use('/addresses', addressRoutes);
 

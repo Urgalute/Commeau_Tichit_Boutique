@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mes Favoris</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <h1>Mes Favoris</h1>
+    <ul>
+        <% favoriteItems.forEach(item => { %>
+            <li>
+                <h2><%= item.name %></h2>
+                <p>Price: <%= item.price %> <%= item.currency %></p>
+                <% if (item.image_url) { %>
+                    <img src="<%= item.image_url %>" alt="<%= item.name %>">
+                <% } %>
+                <form action="/favorites/remove/<%= item.id_product %>" method="POST">
+                    <button type="submit">Remove from Favorites</button>
+                </form>
+            </li>
+        <% }) %>
+    </ul>
+    <a href="/">Back to Home</a>
+</body>
+</html>

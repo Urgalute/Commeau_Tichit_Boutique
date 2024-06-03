@@ -16,12 +16,13 @@
                 <% if (item.image_url) { %>
                     <img src="<%= item.image_url %>" alt="<%= item.name %>">
                 <% } %>
-                <form action="/cart/remove/<%= item.id %>" method="POST">
+                <form action="/cart/remove/<%= item.id_product %>" method="POST">
                     <button type="submit">Remove</button>
                 </form>
             </li>
         <% }) %>
     </ul>
+    <a href="/">Continue Shopping</a>
     <a href="/cart/confirm">Valider mon panier</a> <!-- Change the href to point to /cart/confirm -->
 </body>
 </html>

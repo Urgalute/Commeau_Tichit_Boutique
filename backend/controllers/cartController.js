@@ -116,4 +116,4 @@ exports.removeFromCart = (req, res) => {
     }
 
     res.redirect('/cart');
-};
+}

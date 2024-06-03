@@ -1,3 +1,4 @@
+<!-- frontend/views/home.ejs -->
 <!DOCTYPE html>
 <html>
 <head>
@@ -6,13 +7,14 @@
 </head>
 <body>
     <a href="/cart">View Cart</a>
+    <a href="/favorites">View Favorites</a>
     <h1>Product Catalog</h1>
     <form action="/filter" method="POST">
         <label for="category">Category:</label>
         <select name="category" id="category">
             <option value="">All</option>
             <% categories.forEach(category => { %>
-                <option value="<%= category.id_category %>" <% if (selectedCategory == category.id) { %>selected<% } %>><%= category.label %></option>
+                <option value="<%= category.id %>" <% if (selectedCategory == category.id) { %>selected<% } %>><%= category.label %></option>
             <% }) %>
         </select>
 
@@ -20,7 +22,7 @@
         <select name="color" id="color">
             <option value="">All</option>
             <% colors.forEach(color => { %>
-                <option value="<%= color.id_color %>" <% if (selectedColor == color.id) { %>selected<% } %>><%= color.label %></option>
+                <option value="<%= color.id %>" <% if (selectedColor == color.id) { %>selected<% } %>><%= color.label %></option>
             <% }) %>
         </select>
 
@@ -38,6 +40,9 @@
                 <a href="/product/<%= product.id_product %>">View Details</a>
                 <form action="/cart/add/<%= product.id_product %>" method="POST">
                     <button type="submit">Add to Cart</button>
+                </form>
+                <form action="/favorites/add/<%= product.id_product %>" method="POST">
+                    <button type="submit">Add to Favorites</button>
                 </form>
             </li>
         <% }) %>
