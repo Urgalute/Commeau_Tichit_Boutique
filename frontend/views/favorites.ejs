@@ -3,23 +3,30 @@
 <head>
     <title>Mes Favoris</title>
     <link rel="stylesheet" href="/css/styles.css">
+    <style>
+        img {
+            max-width: 200px; /* Define a maximum width */
+            height: auto; /* Maintain aspect ratio */
+            display: block; /* Ensure the image is block-level */
+            margin: 0 auto; /* Center the image */
+        }
+    </style>
 </head>
 <body>
     <h1>Mes Favoris</h1>
     <ul>
         <% favoriteItems.forEach(item => { %>
             <li>
+                <img src="<%= item.image_url %>" alt="<%= item.name %>">
                 <h2><%= item.name %></h2>
                 <p>Price: <%= item.price %> <%= item.currency %></p>
-                <% if (item.image_url) { %>
-                    <img src="<%= item.image_url %>" alt="<%= item.name %>">
-                <% } %>
-                <form action="/favorites/remove/<%= item.id_product %>" method="POST">
-                    <button type="submit">Remove from Favorites</button>
+                <form action="/favorites/remove" method="post">
+                    <input type="hidden" name="productId" value="<%= item.productId %>">
+                    <button type="submit">Remove</button>
                 </form>
             </li>
         <% }) %>
     </ul>
-    <a href="/">Back to Home</a>
+    <a href="/">Continue Shopping</a>
 </body>
 </html>

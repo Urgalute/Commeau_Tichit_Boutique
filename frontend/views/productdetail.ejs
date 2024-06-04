@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Détails du Produit</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <style>
+        img {
+            max-width: 200px;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <h1><%= product.name %></h1>
+    <% if (product.images) { 
+        const imageArray = product.images.split(','); 
+        imageArray.forEach(image => { %>
+            <img src="<%= image %>" alt="<%= product.name %>">
+        <% });
+    } %>
+    <p><%= product.description %></p>
+    <p>Prix : <%= product.promotional_price ? product.promotional_price : product.price %> <%= product.currency %></p>
+    <p>En stock : <%= product.stock %></p>
+    <a href="/">Retour au catalogue</a>
+</body>
+</html>

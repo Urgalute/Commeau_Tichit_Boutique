@@ -1,11 +1,9 @@
-// backend/routes/favoriteRoutes.js
-
 const express = require('express');
 const router = express.Router();
-const favoritesController = require('../controllers/favoritesController');
+const favoriteController = require('../controllers/favoriteController');
 
-router.post('/add/:id', favoritesController.addToFavorites);
-router.post('/remove/:id', favoritesController.removeFromFavorites);
-router.get('/', favoritesController.getFavorites);
+router.get('/', favoriteController.getFavorites);
+router.post('/add/:id', favoriteController.addToFavorites);
+router.post('/remove', favoriteController.removeFromFavorites);
 
 module.exports = router;

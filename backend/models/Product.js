@@ -1,5 +1,84 @@
 const db = require('../config/db');
 
+const getProductById = async (productId) => {
+  const productQuery = `
+      SELECT product.*, GROUP_CONCAT(product_images.image_url) AS images
+      FROM product
+      LEFT JOIN product_images ON product.id_product = product_images.product_id
+      WHERE product.id_product = ?
+      GROUP BY product.id_product
+  `;
+  const sizesQuery = `
+      SELECT asso_size.id_size, size.label, asso_size.price
+      FROM asso_size
+      JOIN size ON asso_size.id_size = size.id_size
+      WHERE id_product = ?
+  `;
+
+  const [product] = await db.query(productQuery, [productId]);
+  const sizes = await db.query(sizesQuery, [productId]);
+
+  return {
+      ...product[0],
+      sizes
+  };
+};
+
+
+const getAllProducts = () => {
+  return new Promise((resolve, reject) => {
+      const query = `
+          SELECT product.*, GROUP_CONCAT(product_images.image_url) AS images
+          FROM product
+          LEFT JOIN product_images ON product.id_product = product_images.product_id
+          GROUP BY product.id_product;
+      `;
+
+      db.query(query, (err, results) => {
+          if (err) {
+              reject(err);
+          } else {
+              resolve(results);
+          }
+      });
+  });
+};
+
+const getCategories = () => {
+  return new Promise((resolve, reject) => {
+      const query = 'SELECT * FROM category';
+      
+      db.query(query, (err, results) => {
+          if (err) {
+              reject(err);
+          } else {
+              resolve(results);
+          }
+      });
+  });
+};
+
+
+const getColors = () => {
+  return new Promise((resolve, reject) => {
+      const query = 'SELECT * FROM color';
+      
+      db.query(query, (err, results) => {
+          if (err) {
+              reject(err);
+          } else {
+              resolve(results);
+          }
+      });
+  });
+};
+
+module.exports = {
+  getAllProducts,
+  getCategories,
+  getColors
+};
+
 exports.getAll = ({ category, color }, callback) => {
   let query = 'SELECT p.* FROM product p';
   const params = [];

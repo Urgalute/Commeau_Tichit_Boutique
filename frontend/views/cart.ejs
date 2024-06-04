@@ -1,36 +1,46 @@
-<!-- frontend/views/cart.ejs -->
 <!DOCTYPE html>
 <html>
 <head>
     <title>Votre Panier</title>
     <link rel="stylesheet" href="/css/styles.css">
+    <style>
+        img {
+            max-width: 200px; /* Define a maximum width */
+            height: auto; /* Maintain aspect ratio */
+            display: block; /* Ensure the image is block-level */
+            margin: 0 auto; /* Center the image */
+        }
+    </style>
 </head>
 <body>
     <h1>Your Cart</h1>
     <ul>
-        <% cartItems.forEach(item => { %>
-            <li>
-                <h2><%= item.name %></h2>
-                <p>Price: <%= item.price %> <%= item.currency %></p>
-                <p>Quantity: <%= item.quantity %></p>
-                <% if (item.image_url) { %>
-                    <img src="<%= item.image_url %>" alt="<%= item.name %>">
-                <% } %>
-                <form action="/cart/remove/<%= item.id_product %>" method="POST">
-                    <button type="submit">Remove</button>
-                </form>
-                <form action="/cart/update/<%= item.id_product %>" method="POST">
-                    <label for="quantity">Quantity:</label>
-                    <select name="quantity" onchange="this.form.submit()">
-                        <% for (let i = 1; i <= 10; i++) { %>
-                            <option value="<%= i %>" <% if (i === item.quantity) { %>selected<% } %>><%= i %></option>
-                        <% } %>
-                    </select>
-                </form>
-            </li>
-        <% }) %>
+        <a href="/">Continue Shopping</a>
+        <h1>Your Cart</h1>
+        <ul>
+            <% if (cartItems && cartItems.length > 0) { %>
+                <ul>
+                    <% cartItems.forEach(item => { %>
+                        <li>
+                            <img src="<%= item.image_url %>" alt="<%= item.name %>">
+                            <p>Product: <%= item.name %></p>
+                            <p>Size: <%= item.size %></p>
+                            <p>Price: <%= item.price %> <%= item.currency %></p>
+                            <p>Quantity: <%= item.quantity %></p>
+                            <form action="/cart/remove" method="post">
+                                <input type="hidden" name="productId" value="<%= item.id_product %>">
+                                <input type="hidden" name="size" value="<%= item.size %>">
+                                <button type="submit">Remove</button>
+                            </form>
+                        </li>
+                    <% }); %>
+                </ul>
+            <% } else { %>
+                <p>Your cart is empty</p>
+            <% } %>
+        </ul>
     </ul>
     <a href="/">Continue Shopping</a>
-    <a href="/cart/confirm">Valider mon panier</a> <!-- Change the href to point to /cart/confirm -->
+    <a href="/cart/confirm">Valider mon panier</a>
 </body>
 </html>
