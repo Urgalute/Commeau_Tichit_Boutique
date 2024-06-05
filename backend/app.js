@@ -18,7 +18,7 @@ app.use(session({
 }));
 
 const productRoutes = require('./routes/productRoutes');
-app.use('/', productRoutes);
+app.use('/', productRoutes);  
 
 const cartRoutes = require('./routes/cartRoutes');
 app.use('/cart', cartRoutes);

@@ -2,8 +2,6 @@ const db = require('../config/db');
 
 exports.getFavorites = (req, res) => {
     const favorites = req.session.favorites || [];
-
-    // Suppose que vous voulez aussi afficher des informations détaillées sur les produits favoris
     if (favorites.length === 0) {
         return res.render('favorites', { favoriteItems: [] });
     }
@@ -11,12 +9,12 @@ exports.getFavorites = (req, res) => {
     const productIds = favorites.map(item => item.productId);
 
     const query = `
-        SELECT product.id_product, product.name, asso_size.price, product.currency, product_images.image_url
+        SELECT product.id_product, product.name, product.description, asso_size.price, product.currency, product_images.image_url
         FROM product
         LEFT JOIN product_images ON product.id_product = product_images.product_id
         LEFT JOIN asso_size ON product.id_product = asso_size.id_product
         WHERE product.id_product IN (?)
-        GROUP BY product.id_product, product.name, asso_size.price, product.currency, product_images.image_url
+        GROUP BY product.id_product, asso_size.price, product.currency, product_images.image_url;
     `;
 
     db.query(query, [productIds], (err, products) => {
@@ -25,11 +23,11 @@ exports.getFavorites = (req, res) => {
             return res.status(500).json({ message: 'Error fetching favorites', error: err });
         }
 
-        const favoriteItems = favorites.map(item => {
-            const product = products.find(p => p.id_product == item.productId);
+        const favoriteItems = favorites.map(favorite => {
+            const product = products.find(p => p.id_product == favorite.productId);
             return {
                 ...product,
-                ...item
+                price: product.price // Assurez-vous que le prix correspond à la taille choisie, ici simplifié
             };
         });
 
@@ -44,15 +42,13 @@ exports.addToFavorites = (req, res) => {
         req.session.favorites = [];
     }
 
-    // Vérifier si le produit est déjà dans les favoris
     const existingFavorite = req.session.favorites.find(item => item.productId == productId);
 
     if (!existingFavorite) {
-        // Ajouter aux favoris
         req.session.favorites.push({ productId });
     }
 
-    res.redirect('/favorites');
+    res.json({ success: true, message: 'le produit a bien été ajouté a vos favoris.' });
 };
 
 exports.removeFromFavorites = (req, res) => {
@@ -62,9 +58,9 @@ exports.removeFromFavorites = (req, res) => {
         req.session.favorites = [];
     }
 
-    // Supprimer seulement le produit spécifié
     req.session.favorites = req.session.favorites.filter(item => item.productId != productId);
 
-    res.redirect('/favorites');
+    res.json({ success: true, message: 'Removed from favorites' });
 };
+
 
