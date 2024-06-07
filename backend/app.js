@@ -1,9 +1,13 @@
 const express = require('express');
-const session = require('express-session');
+const app = express();
 const path = require('path');
 const bodyParser = require('body-parser');
-
-const app = express();
+const cookieParser = require('cookie-parser');
+const session = require('express-session');
+const productRoutes = require('./routes/productRoutes');
+const userRoutes = require('./routes/userRoutes');
+const adminRoutes = require('./routes/adminRoutes');
+const authRoutes = require('./routes/authRoutes'); // Ajoutez cette ligne
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -11,27 +15,18 @@ app.use(express.static(path.join(__dirname, '../frontend/public')));
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, '../frontend/views'));
 
+app.use(cookieParser());
+
 app.use(session({
     secret: 'your-secret-key',
     resave: false,
     saveUninitialized: true
 }));
 
-const productRoutes = require('./routes/productRoutes');
-app.use('/', productRoutes);  
-
-const cartRoutes = require('./routes/cartRoutes');
-app.use('/cart', cartRoutes);
-
-const favoriteRoutes = require('./routes/favoriteRoutes');
-app.use('/favorites', favoriteRoutes);
-
-const addressRoutes = require('./routes/addressRoutes');
-app.use('/addresses', addressRoutes);
-
-app.get('/payment', (req, res) => {
-    res.render('payment', { selectedAddress: req.session.selectedAddress });
-});
+app.use('/', productRoutes);
+app.use('/', userRoutes);
+app.use('/admin', adminRoutes);
+app.use('/auth', authRoutes); // Utilisez authRoutes ici
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

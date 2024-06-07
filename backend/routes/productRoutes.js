@@ -2,8 +2,7 @@ const express = require('express');
 const router = express.Router();
 const productController = require('../controllers/productController');
 
-router.get('/', productController.getAllProducts);  // Route principale pour le catalogue
-router.post('/filter', productController.filterProducts);  // Route pour le filtrage
+router.get('/', productController.getAllProducts);
 router.get('/product/:id', productController.getProductById);
 
 router.get('/api/price', async (req, res) => {

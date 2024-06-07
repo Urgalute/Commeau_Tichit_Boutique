@@ -1,121 +1,53 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>Home</title>
     <link rel="stylesheet" href="/css/styles.css">
-    <style>
-        img {
-            max-width: 200px;
-            height: auto;
-            display: block;
-            margin: 0 auto;
-        }
-    </style>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
-    <a href="/cart">View Cart</a>
-    <a href="/favorites">View Favorites</a>
-    <h1>Product Catalog</h1>
-
-    <div>
-        <form id="filterForm" method="POST" action="/filter">
-            <label for="category">Category:</label>
-            <select name="category" id="category">
-                <option value="">Select a category</option>
-                <% categories.forEach(category => { %>
-                    <option value="<%= category.id_category %>" <% if (selectedCategory == category.id_category) { %>selected<% } %>><%= category.label %></option>
-                <% }); %>
-            </select>
-
-            <label for="color">Color:</label>
-            <select name="color" id="color">
-                <option value="">Select a color</option>
-                <% colors.forEach(color => { %>
-                    <option value="<%= color.id_color %>" <% if (selectedColor == color.id_color) { %>selected<% } %>><%= color.label %></option>
-                <% }); %>
-            </select>
-
-            <label for="sort">Sort by:</label>
-            <select name="sort" id="sort">
-                <option value="">Default</option>
-                <option value="price_asc">Price: Low to High</option>
-                <option value="price_desc">Price: High to Low</option>
-                <option value="name_asc">Name: A to Z</option>
-                <option value="name_desc">Name: Z to A</option>
-            </select>
-
-            <button type="submit">Filter</button>
-        </form>
-    </div>
-
-    <ul>
-        <% products.forEach(product => { %>
-            <li>
-                <h2><%= product.name %></h2>
-                <img src="<%= product.images.split(',')[0] %>" alt="<%= product.name %>">
-                <% if (product.sizes && product.sizes.length > 0) { %>
-                    <% const defaultSize = product.sizes.find(size => size.label === 'S'); %>
-                    <% if (defaultSize) { %>
-                        <p>Price: <span id="price-<%= product.id_product %>"><%= defaultSize.price %> <%= product.currency %></span></p>
-                    <% } else { %>
-                        <p>No size S available</p>
-                    <% } %>
-                    <label for="size-<%= product.id_product %>">Size:</label>
-                    <select name="size" id="size-<%= product.id_product %>" onchange="updatePrice('<%= product.id_product %>', this.value)">
-                        <% product.sizes.forEach(size => { %>
-                            <option value="<%= size.label %>"><%= size.label %></option>
-                        <% }) %>
-                    </select>
-                <% } else { %>
-                    <p>No sizes available</p>
+    <header>
+        <h1>Welcome to Our Shop</h1>
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/cart">Cart</a></li>
+                <li><a href="/favorites">Favorites</a></li>
+                <% if (user && user.role === 'admin') { %>
+                    <li><a href="/admin/dashboard">Admin Dashboard</a></li>
                 <% } %>
-                <a href="/product/<%= product.id_product %>">View Details</a>
-                <form action="/cart/add/<%= product.id_product %>" method="POST">
-                    <button type="submit">Add to Cart</button>
-                </form>
-                <button class="add-to-favorites" data-id="<%= product.id_product %>">Add to Favorites</button>
-            </li>
-        <% }) %>
-    </ul>
-
-    <script>
-        $(document).ready(function() {
-            $('.add-to-favorites').click(function(event) {
-                event.preventDefault(); // Empêche le comportement par défaut du bouton
-
-                const productId = $(this).data('id');
-
-                $.ajax({
-                    url: '/favorites/add/' + productId,
-                    method: 'POST',
-                    success: function(response) {
-                        if (response.success) {
-                            alert(response.message);
-                        } else {
-                            alert('Failed to add to favorites');
-                        }
-                    },
-                    error: function() {
-                        alert('An error occurred');
-                    }
-                });
-            });
-        });
-
-        function updatePrice(productId, size) {
-            $.ajax({
-                url: '/api/price',
-                method: 'GET',
-                data: { productId: productId, size: size },
-                success: function(response) {
-                    $('#price-' + productId).text(response.price + ' ' + response.currency);
-                },
-                error: function() {
-                    alert('An error occurred while fetching the price');
-                }
-            });
-        }
-    </script>
+                <% if (user) { %>
+                    <li><a href="/auth/logout">Logout</a></li>
+                <% } else { %>
+                    <li><a href="/auth/login">Login</a></li>
+                    <li><a href="/auth/register">Register</a></li>
+                <% } %>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <h2>Products</h2>
+        <form id="sortForm" action="/" method="GET">
+            <label for="sortOrder">Sort By:</label>
+            <select name="sort" id="sortOrder" onchange="document.getElementById('sortForm').submit()">
+                <option value="default" <%= sortOrder === 'default' ? 'selected' : '' %>>Default</option>
+                <option value="price_asc" <%= sortOrder === 'price_asc' ? 'selected' : '' %>>Price: Low to High</option>
+                <option value="price_desc" <%= sortOrder === 'price_desc' ? 'selected' : '' %>>Price: High to Low</option>
+                <option value="name_asc" <%= sortOrder === 'name_asc' ? 'selected' : '' %>>Name: A to Z</option>
+                <option value="name_desc" <%= sortOrder === 'name_desc' ? 'selected' : '' %>>Name: Z to A</option>
+            </select>
+        </form>
+        <div class="product-list">
+            <% products.forEach(product => { %>
+                <div class="product-item">
+                    <h3><%= product.name %></h3>
+                    <p><%= product.description %></p>
+                    <p>Price: <%= product.currency %> <%= product.promotional_price ? product.promotional_price : product.price %></p>
+                    <p>Stock: <%= product.stock %></p>
+                    <a href="/products/<%= product.id_product %>">View Details</a>
+                </div>
+            <% }) %>
+        </div>
+    </main>
 </body>
 </html>
