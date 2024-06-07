@@ -16,8 +16,11 @@
 </head>
 <body>
 <<<<<<< HEAD
+<<<<<<< HEAD
     <a href="/cart">View Cart</a>
     <a href="/favorites">View Favorites</a>
+=======
+>>>>>>> parent of b926874 (fonctionnalité ok)
 =======
 >>>>>>> parent of b926874 (fonctionnalité ok)
     <h1><%= product.name %></h1>
@@ -28,6 +31,7 @@
         <% });
     } %>
     <p><%= product.description %></p>
+<<<<<<< HEAD
 <<<<<<< HEAD
     <% if (product.final_price) { %>
         <p><del>Original Price: <%= product.currency %> <%= product.price %></del></p>
@@ -116,6 +120,11 @@
             });
         }
     </script>
+=======
+    <p>Prix : <%= product.promotional_price ? product.promotional_price : product.price %> <%= product.currency %></p>
+    <p>En stock : <%= product.stock %></p>
+    <a href="/">Retour au catalogue</a>
+>>>>>>> parent of b926874 (fonctionnalité ok)
 =======
     <p>Prix : <%= product.promotional_price ? product.promotional_price : product.price %> <%= product.currency %></p>
     <p>En stock : <%= product.stock %></p>
