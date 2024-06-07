@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <title>Home</title>
     <link rel="stylesheet" href="/css/styles.css">
-<<<<<<< HEAD
 </head>
 <body>
     <header>
@@ -14,23 +13,28 @@
                 <li><a href="/">Home</a></li>
                 <li><a href="/cart">Cart</a></li>
                 <li><a href="/favorites">Favorites</a></li>
-                <% if (user && user.role === 'admin') { %>
-                    <li><a href="/admin/dashboard">Admin Dashboard</a></li>
-                <% } %>
-                <% if (user) { %>
-                    <li><a href="/auth/logout">Logout</a></li>
-                <% } else { %>
-                    <li><a href="/auth/login">Login</a></li>
-                    <li><a href="/auth/register">Register</a></li>
-                <% } %>
             </ul>
         </nav>
     </header>
     <main>
         <h2>Products</h2>
-        <form id="sortForm" action="/" method="GET">
+        <form id="filterForm" action="/" method="GET">
+            <label for="category">Category:</label>
+            <select name="category" id="category" onchange="document.getElementById('filterForm').submit()">
+                <option value="">All Categories</option>
+                <% categories.forEach(category => { %>
+                    <option value="<%= category.id_category %>" <%= selectedCategory == category.id_category ? 'selected' : '' %>><%= category.label %></option>
+                <% }) %>
+            </select>
+            <label for="color">Color:</label>
+            <select name="color" id="color" onchange="document.getElementById('filterForm').submit()">
+                <option value="">All Colors</option>
+                <% colors.forEach(color => { %>
+                    <option value="<%= color.id_color %>" <%= selectedColor == color.id_color ? 'selected' : '' %>><%= color.label %></option>
+                <% }) %>
+            </select>
             <label for="sortOrder">Sort By:</label>
-            <select name="sort" id="sortOrder" onchange="document.getElementById('sortForm').submit()">
+            <select name="sort" id="sortOrder" onchange="document.getElementById('filterForm').submit()">
                 <option value="default" <%= sortOrder === 'default' ? 'selected' : '' %>>Default</option>
                 <option value="price_asc" <%= sortOrder === 'price_asc' ? 'selected' : '' %>>Price: Low to High</option>
                 <option value="price_desc" <%= sortOrder === 'price_desc' ? 'selected' : '' %>>Price: High to Low</option>
@@ -41,92 +45,64 @@
         <div class="product-list">
             <% products.forEach(product => { %>
                 <div class="product-item">
-                    <h3><%= product.name %></h3>
-                    <p><%= product.description %></p>
-                    <p>Price: <%= product.currency %> <%= product.promotional_price ? product.promotional_price : product.price %></p>
-                    <p>Stock: <%= product.stock %></p>
-                    <a href="/products/<%= product.id_product %>">View Details</a>
+                    <h3><a href="/product/<%= product.id_product %>"><%= product.name %></a></h3>
+                    <img src="<%= product.images.split(',')[0] %>" alt="<%= product.name %>">
+                    <% if (product.sizes && product.sizes.length > 0) { %>
+                        <form action="/cart/add/<%= product.id_product %>" method="POST">
+                            <label for="size-<%= product.id_product %>">Size:</label>
+                            <select name="size" id="size-<%= product.id_product %>" onchange="updatePrice('<%= product.id_product %>', this.value)">
+                                <% product.sizes.forEach(size => { %>
+                                    <option value="<%= size.label %>"><%= size.label %></option>
+                                <% }) %>
+                            </select>
+                            <p>Price: <span id="price-<%= product.id_product %>"><%= product.price %> <%= product.currency %></span></p>
+                            <button type="submit">Add to Cart</button>
+                        </form>
+                    <% } else { %>
+                        <p>No sizes available</p>
+                    <% } %>
+                    <button class="add-to-favorites" data-id="<%= product.id_product %>">Add to Favorites</button>
                 </div>
             <% }) %>
         </div>
+        <div class="pagination">
+            <% for(let i = 1; i <= totalPages; i++) { %>
+                <a href="/?page=<%= i %>&sort=<%= sortOrder %>&category=<%= selectedCategory %>&color=<%= selectedColor %>" <%= currentPage === i ? 'class="active"' : '' %>><%= i %></a>
+            <% } %>
+        </div>
     </main>
-=======
-    <style>
-        img {
-            max-width: 200px;
-            height: auto;
-            display: block;
-            margin: 0 auto;
-        }
-    </style>
-</head>
-<body>
-    <a href="/cart">View Cart</a>
-    <a href="/favorites">View Favorites</a>
-    <h1>Product Catalog</h1>
-
-    <form action="/filter" method="POST">
-        <label for="category">Category:</label>
-        <select name="category" id="category">
-            <option value="">All</option>
-            <% categories.forEach(category => { %>
-                <option value="<%= category.id_category %>" <%= selectedCategory == category.id_category ? 'selected' : '' %>><%= category.label %></option>
-            <% }) %>
-        </select>
-
-        <label for="color">Color:</label>
-        <select name="color" id="color">
-            <option value="">All</option>
-            <% colors.forEach(color => { %>
-                <option value="<%= color.id_color %>" <%= selectedColor == color.id_color ? 'selected' : '' %>><%= color.label %></option>
-            <% }) %>
-        </select>
-
-        <button type="submit">Filter</button>
-    </form>
-
-    <ul>
-        <% products.forEach(product => { %>
-            <li>
-                <h2><%= product.name %></h2>
-                <img src="<%= product.images.split(',')[0] %>" alt="<%= product.name %>">
-                <% if (product.sizes && product.sizes.length > 0) { %>
-                    <% const defaultSize = product.sizes.find(size => size.label === 'S'); %>
-                    <% if (defaultSize) { %>
-                        <p>Price: <span id="price-<%= product.id_product %>"><%= defaultSize.price %> <%= product.currency %></span></p>
-                    <% } else { %>
-                        <p>No size S available</p>
-                    <% } %>
-                    <label for="size-<%= product.id_product %>">Size:</label>
-                    <select name="size" id="size-<%= product.id_product %>" onchange="updatePrice('<%= product.id_product %>', this.value)">
-                        <% product.sizes.forEach(size => { %>
-                            <option value="<%= size.label %>"><%= size.label %></option>
-                        <% }) %>
-                    </select>
-                <% } else { %>
-                    <p>No sizes available</p>
-                <% } %>
-                <a href="/product/<%= product.id_product %>">View Details</a>
-                <form action="/cart/add/<%= product.id_product %>" method="POST">
-                    <button type="submit">Add to Cart</button>
-                </form>
-                <form action="/favorites/add/<%= product.id_product %>" method="POST">
-                    <button type="submit">Add to Favorites</button>
-                </form>
-            </li>
-        <% }) %>
-    </ul>
-
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        function updatePrice(productId, sizeLabel) {
-            fetch(`/api/price?productId=${productId}&size=${sizeLabel}`)
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById(`price-${productId}`).innerText = data.price + ' ' + data.currency;
-                })
-                .catch(error => console.error('Error fetching price:', error));
+        function updatePrice(productId, size) {
+            $.ajax({
+                url: '/api/price',
+                method: 'GET',
+                data: { productId: productId, size: size },
+                success: function(response) {
+                    $('#price-' + productId).text(response.price + ' ' + response.currency);
+                },
+                error: function() {
+                    alert('An error occurred while fetching the price');
+                }
+            });
         }
+
+        $(document).ready(function() {
+            $('.add-to-favorites').click(function(event) {
+                event.preventDefault();
+                const productId = $(this).data('id');
+                $.ajax({
+                    url: '/favorites/add/' + productId,
+                    method: 'POST',
+                    success: function(response) {
+                        alert(response.message);
+                    },
+                    error: function() {
+                        alert('An error occurred while adding to favorites');
+                    }
+                });
+            });
+        });
     </script>
->>>>>>> parent of b926874 (fonctionnalité ok)
 </body>
 </html>

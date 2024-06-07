@@ -1,70 +1,65 @@
 const db = require('../config/db');
 
 exports.getFavorites = (req, res) => {
-    const favorites = req.session.favorites || [];
+    console.log('Fetching favorite products...');
+    if (!req.session.favorites) {
+        req.session.favorites = [];
+    }
 
-    // Suppose que vous voulez aussi afficher des informations détaillées sur les produits favoris
-    if (favorites.length === 0) {
+    const favoriteIds = req.session.favorites;
+    console.log('Favorite IDs:', favoriteIds);
+
+    if (favoriteIds.length === 0) {
         return res.render('favorites', { favoriteItems: [] });
     }
 
-    const productIds = favorites.map(item => item.productId);
-
     const query = `
-        SELECT product.id_product, product.name, asso_size.price, product.currency, product_images.image_url
+        SELECT product.id_product, product.name, MIN(asso_size.price) AS price, product.currency, MIN(product_images.image_url) AS image_url
         FROM product
         LEFT JOIN product_images ON product.id_product = product_images.product_id
         LEFT JOIN asso_size ON product.id_product = asso_size.id_product
         WHERE product.id_product IN (?)
-        GROUP BY product.id_product, product.name, asso_size.price, product.currency, product_images.image_url
+        GROUP BY product.id_product, product.name, product.currency
     `;
 
-    db.query(query, [productIds], (err, products) => {
+    db.query(query, [favoriteIds], (err, results) => {
         if (err) {
-            console.error(err);
-            return res.status(500).json({ message: 'Error fetching favorites', error: err });
+            console.error('Error fetching favorite products:', err);
+            return res.status(500).json({ message: 'Error fetching favorite products', error: err });
         }
-
-        const favoriteItems = favorites.map(item => {
-            const product = products.find(p => p.id_product == item.productId);
-            return {
-                ...product,
-                ...item
-            };
-        });
-
-        res.render('favorites', { favoriteItems });
+        console.log('Favorite products fetched:', results);
+        res.render('favorites', { favoriteItems: results });
     });
 };
 
 exports.addToFavorites = (req, res) => {
+    console.log('Adding product to favorites...');
     const productId = req.params.id;
 
     if (!req.session.favorites) {
         req.session.favorites = [];
     }
 
-    // Vérifier si le produit est déjà dans les favoris
-    const existingFavorite = req.session.favorites.find(item => item.productId == productId);
-
-    if (!existingFavorite) {
-        // Ajouter aux favoris
-        req.session.favorites.push({ productId });
+    if (!req.session.favorites.includes(productId)) {
+        req.session.favorites.push(productId);
     }
 
-    res.redirect('/favorites');
+    console.log('Updated favorites:', req.session.favorites);
+    res.json({ message: 'Product added to favorites' });
 };
 
+
 exports.removeFromFavorites = (req, res) => {
+    console.log('Removing product from favorites...');
     const productId = req.body.productId;
 
     if (!req.session.favorites) {
         req.session.favorites = [];
     }
 
-    // Supprimer seulement le produit spécifié
-    req.session.favorites = req.session.favorites.filter(item => item.productId != productId);
+    req.session.favorites = req.session.favorites.filter(id => id !== productId);
+    console.log('Updated favorites:', req.session.favorites);
 
+    // Rediriger vers la page des favoris après la suppression
     res.redirect('/favorites');
 };
-

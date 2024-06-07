@@ -3,8 +3,14 @@ const app = express();
 const path = require('path');
 const bodyParser = require('body-parser');
 const session = require('express-session');
-const productRoutes = require('./routes/productRoutes');
 
+console.log('Loading routes...');
+const productRoutes = require('./routes/productRoutes');
+const cartRoutes = require('./routes/cartRoutes');
+const favoriteRoutes = require('./routes/favoriteRoutes'); // Assurez-vous que le nom est correct
+const addressRoutes = require('./routes/addressRoutes');
+
+console.log('Setting up middleware...');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, '../frontend/public')));
@@ -17,16 +23,10 @@ app.use(session({
     saveUninitialized: true
 }));
 
-const productRoutes = require('./routes/productRoutes');
+console.log('Registering routes...');
 app.use('/', productRoutes);
-
-const cartRoutes = require('./routes/cartRoutes');
 app.use('/cart', cartRoutes);
-
-const favoriteRoutes = require('./routes/favoriteRoutes');
-app.use('/favorites', favoriteRoutes);
-
-const addressRoutes = require('./routes/addressRoutes');
+app.use('/favorites', favoriteRoutes); 
 app.use('/addresses', addressRoutes);
 
 app.get('/payment', (req, res) => {

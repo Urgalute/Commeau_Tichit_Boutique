@@ -1,9 +1,9 @@
 const db = require('../config/db');
 
-const getAllProducts = (sortOrder, category, color) => {
+const getAllProducts = (sortOrder, category, color, limit, offset) => {
     return new Promise((resolve, reject) => {
         let query = `
-            SELECT product.*, GROUP_CONCAT(product_images.image_url) AS images, MIN(asso_size.price) AS price
+            SELECT product.*, GROUP_CONCAT(DISTINCT product_images.image_url) AS images, MIN(asso_size.price) AS price
             FROM product
             LEFT JOIN product_images ON product.id_product = product_images.product_id
             LEFT JOIN asso_size ON product.id_product = asso_size.id_product
@@ -32,9 +32,14 @@ const getAllProducts = (sortOrder, category, color) => {
             query += ' ORDER BY MIN(asso_size.price) DESC';
         } else if (sortOrder === 'name_asc') {
             query += ' ORDER BY product.name ASC';
+        } else if (sortOrder === 'name_desc') {
+            query += ' ORDER BY product.name DESC';
         } else {
             query += ' ORDER BY product.id_product ASC';
         }
+
+        query += ' LIMIT ? OFFSET ?';
+        queryParams.push(limit, offset);
 
         db.query(query, queryParams, (err, results) => {
             if (err) {
@@ -47,16 +52,38 @@ const getAllProducts = (sortOrder, category, color) => {
 };
 
 
-
 exports.getAllProducts = async (req, res) => {
     try {
-        const products = await getAllProducts();
         const sortOrder = req.query.sort || 'default';
+        const category = req.query.category || '';
+        const color = req.query.color || '';
+        const page = parseInt(req.query.page) || 1;
+        const limit = 9;
+        const offset = (page - 1) * limit;
+
+        const [products, categories, colors, totalCount] = await Promise.all([
+            getAllProducts(sortOrder, category, color, limit, offset),
+            getAllCategories(),
+            getAllColors(),
+            getProductCount(category, color)
+        ]);
+
+        const totalPages = Math.ceil(totalCount / limit);
+
+        const productsWithSizes = await Promise.all(products.map(async product => {
+            product.sizes = await getSizesByProductId(product.id_product);
+            return product;
+        }));
 
         res.render('home', {
-            products,
+            products: productsWithSizes,
+            categories,
+            colors,
+            selectedCategory: category,
+            selectedColor: color,
             sortOrder,
-            user: req.user // Pass the user information to the view
+            currentPage: page,
+            totalPages
         });
     } catch (err) {
         console.error('Error fetching products:', err);
@@ -64,9 +91,6 @@ exports.getAllProducts = async (req, res) => {
     }
 };
 
-
-
-// Récupérer les tailles par ID de produit
 const getSizesByProductId = (productId) => {
     return new Promise((resolve, reject) => {
         const query = `
@@ -86,7 +110,6 @@ const getSizesByProductId = (productId) => {
     });
 };
 
-// Récupérer toutes les catégories
 const getAllCategories = () => {
     return new Promise((resolve, reject) => {
         const query = 'SELECT * FROM category';
@@ -100,7 +123,7 @@ const getAllCategories = () => {
     });
 };
 
-// Récupérer toutes les couleurs
+
 const getAllColors = () => {
     return new Promise((resolve, reject) => {
         const query = 'SELECT * FROM color';
@@ -114,14 +137,14 @@ const getAllColors = () => {
     });
 };
 
-
-
 exports.filterProducts = async (req, res) => {
     try {
-        const { category, color } = req.body;
-        const sortOrder = req.query.sort || 'default';
+        const { category, color, sort } = req.body;
+        console.log('FilterProducts function called');
+        console.log('Category:', category, 'Color:', color, 'Sort:', sort);
+
         let query = `
-            SELECT product.*, GROUP_CONCAT(product_images.image_url) AS images, MIN(asso_size.price) AS price
+            SELECT product.*, GROUP_CONCAT(product_images.image_url) AS images, MIN(asso_size.price) AS min_price
             FROM product
             LEFT JOIN product_images ON product.id_product = product_images.product_id
             LEFT JOIN asso_size ON product.id_product = asso_size.id_product
@@ -142,14 +165,22 @@ exports.filterProducts = async (req, res) => {
             queryParams.push(color);
         }
 
-        if (sortOrder === 'price_asc') {
-            query += ' GROUP BY product.id_product ORDER BY MIN(asso_size.price) ASC';
-        } else if (sortOrder === 'price_desc') {
-            query += ' GROUP BY product.id_product ORDER BY MIN(asso_size.price) DESC';
-        } else if (sortOrder === 'name_asc') {
-            query += ' GROUP BY product.id_product ORDER BY product.name ASC';
+        query += ' GROUP BY product.id_product';
+
+        // Ajoutez des clauses ORDER BY en fonction du paramètre de tri
+        if (sort) {
+            if (sort === 'price_asc') {
+                query += ' ORDER BY min_price ASC';
+            } else if (sort === 'price_desc') {
+                query += ' ORDER BY min_price DESC';
+            } else if (sort === 'name_asc') {
+                query += ' ORDER BY product.name ASC';
+            } else if (sort === 'name_desc') {
+                query += ' ORDER BY product.name DESC';
+            }
         } else {
-            query += ' GROUP BY product.id_product ORDER BY product.id_product ASC';
+            // Trier par défaut par id_product
+            query += ' ORDER BY product.id_product ASC';
         }
 
         db.query(query, queryParams, async (err, products) => {
@@ -171,8 +202,7 @@ exports.filterProducts = async (req, res) => {
                 selectedCategory: category,
                 selectedColor: color,
                 categories: categories,
-                colors: colors,
-                sortOrder: sortOrder // Assurez-vous de passer sortOrder à la vue
+                colors: colors
             });
         });
     } catch (err) {
@@ -181,7 +211,7 @@ exports.filterProducts = async (req, res) => {
     }
 };
 
-// Récupérer le produit par ID
+
 exports.getProductById = async (req, res) => {
     try {
         const productId = req.params.id;
@@ -211,7 +241,6 @@ exports.getProductById = async (req, res) => {
             const product = results[0];
             product.sizes = await getSizesByProductId(product.id_product);
 
-            // Récupérer les produits recommandés
             const recommendedQuery = `
                 SELECT product.*, 
                        GROUP_CONCAT(product_images.image_url) AS images, 
@@ -262,6 +291,36 @@ exports.getPriceByProductIdAndSize = (productId, sizeLabel) => {
                 reject(err);
             } else {
                 resolve(results[0]);
+            }
+        });
+    });
+};
+
+const getProductCount = (category, color) => {
+    return new Promise((resolve, reject) => {
+        let query = 'SELECT COUNT(DISTINCT product.id_product) AS count FROM product';
+        let conditions = [];
+        let params = [];
+
+        if (category) {
+            conditions.push('product.id_category = ?');
+            params.push(category);
+        }
+
+        if (color) {
+            conditions.push('product.id_product IN (SELECT id_product FROM asso_color WHERE id_color = ?)');
+            params.push(color);
+        }
+
+        if (conditions.length > 0) {
+            query += ' WHERE ' + conditions.join(' AND ');
+        }
+
+        db.query(query, params, (err, results) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(results[0].count);
             }
         });
     });

@@ -15,14 +15,8 @@
     </style>
 </head>
 <body>
-<<<<<<< HEAD
-<<<<<<< HEAD
     <a href="/cart">View Cart</a>
     <a href="/favorites">View Favorites</a>
-=======
->>>>>>> parent of b926874 (fonctionnalité ok)
-=======
->>>>>>> parent of b926874 (fonctionnalité ok)
     <h1><%= product.name %></h1>
     <% if (product.images) { 
         const imageArray = product.images.split(','); 
@@ -31,14 +25,6 @@
         <% });
     } %>
     <p><%= product.description %></p>
-<<<<<<< HEAD
-<<<<<<< HEAD
-    <% if (product.final_price) { %>
-        <p><del>Original Price: <%= product.currency %> <%= product.price %></del></p>
-        <p>Promotional Price: <%= product.currency %> <%= product.final_price %></p>
-    <% } else { %>
-        <p>Price: <%= product.currency %> <%= product.price %></p>
-    <% } %>
     <% if (product.sizes && product.sizes.length > 0) { %>
         <% const defaultSize = product.sizes.find(size => size.label === 'S'); %>
         <% if (defaultSize) { %>
@@ -66,11 +52,15 @@
             <li>
                 <h3><%= recommendedProduct.name %></h3>
                 <img src="<%= recommendedProduct.images.split(',')[0] %>" alt="<%= recommendedProduct.name %>">
-                <% if (recommendedProduct.final_price) { %>
-                    <p><del>Original Price: <%= recommendedProduct.currency %> <%= recommendedProduct.price %></del></p>
-                    <p>Promotional Price: <%= recommendedProduct.currency %> <%= recommendedProduct.final_price %></p>
+                <% if (recommendedProduct.sizes && recommendedProduct.sizes.length > 0) { %>
+                    <% const defaultSize = recommendedProduct.sizes.find(size => size.label === 'S'); %>
+                    <% if (defaultSize) { %>
+                        <p>Price: <span id="price-<%= recommendedProduct.id_product %>"><%= defaultSize.price %> <%= recommendedProduct.currency %></span></p>
+                    <% } else { %>
+                        <p>No size S available</p>
+                    <% } %>
                 <% } else { %>
-                    <p>Price: <%= recommendedProduct.currency %> <%= recommendedProduct.price %></p>
+                    <p>No sizes available</p>
                 <% } %>
                 <a href="/product/<%= recommendedProduct.id_product %>">View Details</a>
                 <form action="/cart/add/<%= recommendedProduct.id_product %>" method="POST">
@@ -85,7 +75,7 @@
     <script>
         $(document).ready(function() {
             $('.add-to-favorites').click(function(event) {
-                event.preventDefault();
+                event.preventDefault(); // Empêche le comportement par défaut du bouton
 
                 const productId = $(this).data('id');
 
@@ -120,15 +110,5 @@
             });
         }
     </script>
-=======
-    <p>Prix : <%= product.promotional_price ? product.promotional_price : product.price %> <%= product.currency %></p>
-    <p>En stock : <%= product.stock %></p>
-    <a href="/">Retour au catalogue</a>
->>>>>>> parent of b926874 (fonctionnalité ok)
-=======
-    <p>Prix : <%= product.promotional_price ? product.promotional_price : product.price %> <%= product.currency %></p>
-    <p>En stock : <%= product.stock %></p>
-    <a href="/">Retour au catalogue</a>
->>>>>>> parent of b926874 (fonctionnalité ok)
 </body>
 </html>

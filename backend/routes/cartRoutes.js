@@ -1,3 +1,4 @@
+// cartRoutes.js
 const express = require('express');
 const router = express.Router();
 const cartController = require('../controllers/cartController');
@@ -8,6 +9,6 @@ router.post('/remove', cartController.removeFromCart); // Vérifiez que cette li
 router.get('/confirm', cartController.confirmCart);
 router.post('/checkout', cartController.placeOrder);
 router.post('/validate-address', cartController.validateAddress);
-router.post('/update/:id', cartController.updateQuantity);
+router.post('/update/:id', cartController.updateQuantity); // Route pour mettre à jour la quantité
 
 module.exports = router;

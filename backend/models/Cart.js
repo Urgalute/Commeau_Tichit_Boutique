@@ -20,5 +20,3 @@ exports.removeFromCart = (cartId, callback) => {
     const query = 'DELETE FROM cart WHERE id = ?';
     db.query(query, [cartId], callback);
 };
-
-

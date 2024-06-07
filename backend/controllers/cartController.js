@@ -1,6 +1,7 @@
+// cartController.js
 const db = require('../config/db');
 
-// Fonction pour obtenir le panier
+// Function to get the cart
 exports.getCart = (req, res) => {
     const cart = req.session.cart || [];
 
@@ -38,7 +39,7 @@ exports.getCart = (req, res) => {
     });
 };
 
-// Fonction pour confirmer le panier
+// Function to confirm the cart
 exports.confirmCart = (req, res) => {
     const cart = req.session.cart || [];
 
@@ -75,13 +76,13 @@ exports.confirmCart = (req, res) => {
     });
 };
 
-// Fonction pour afficher la page de paiement
+// Function to display the checkout page
 exports.checkout = (req, res) => {
     const addresses = req.session.addresses || [];
     res.render('checkout', { addresses });
 };
 
-// Fonction pour passer une commande
+// Function to place an order
 exports.placeOrder = (req, res) => {
     const addresses = req.session.addresses || [];
     addresses.push(req.body);
@@ -89,14 +90,14 @@ exports.placeOrder = (req, res) => {
     res.redirect('/cart/confirm');
 };
 
-// Fonction pour valider une adresse
+// Function to validate an address
 exports.validateAddress = (req, res) => {
     const selectedAddressIndex = req.body.selectedAddressIndex;
     req.session.selectedAddress = req.session.addresses[selectedAddressIndex];
     res.redirect('/payment');
 };
 
-// Fonction pour ajouter un produit au panier
+// Function to add a product to the cart
 exports.addToCart = (req, res) => {
     const productId = req.params.id;
     const size = req.body.size || 'S'; // Default to 'S'
@@ -117,7 +118,7 @@ exports.addToCart = (req, res) => {
     res.redirect('/');
 };
 
-// Fonction pour supprimer un produit du panier
+// Function to remove a product from the cart
 exports.removeFromCart = (req, res) => {
     const { productId, size } = req.body;
     console.log('Removing item:', { productId, size });
@@ -135,30 +136,31 @@ exports.removeFromCart = (req, res) => {
     // Log the updated state of the cart
     console.log('Updated cart:', req.session.cart);
 
-    res.redirect('/cart'); // Rediriger vers la page du panier après la suppression
+    res.redirect('/cart'); // Redirect to the cart page after removal
 };
 
-// Fonction pour mettre à jour la quantité d'un produit dans le panier
+// Function to update the quantity of a product in the cart
 exports.updateQuantity = (req, res) => {
     const productId = req.params.id;
+    const size = req.body.size;
     const quantity = parseInt(req.body.quantity, 10);
 
     if (!req.session.cart) {
         req.session.cart = [];
     }
 
-    const productIndex = req.session.cart.findIndex(item => item.productId == productId);
+    const productIndex = req.session.cart.findIndex(item => item.productId == productId && item.size == size);
 
     if (productIndex !== -1 && quantity > 0) {
         req.session.cart[productIndex].quantity = quantity;
     } else if (quantity <= 0) {
-        req.session.cart = req.session.cart.filter(item => item.productId != productId);
+        req.session.cart = req.session.cart.filter(item => !(item.productId == productId && item.size == size));
     }
 
     res.redirect('/cart');
 };
 
-// Fonction pour afficher le panier
+// Function to view the cart
 exports.viewCart = (req, res) => {
     const cart = req.session.cart || [];
 

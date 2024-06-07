@@ -50,3 +50,23 @@ button:hover {
 p {
   text-align: center;
 }
+
+
+.product-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.product-item {
+  width: 30%; /* Ajustez ce pourcentage pour le nombre d'éléments par ligne */
+  margin-bottom: 20px;
+  text-align: center; /* Centre le texte et les images à l'intérieur de l'élément */
+}
+
+.product-item img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
