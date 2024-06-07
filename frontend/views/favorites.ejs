@@ -11,48 +11,22 @@
             margin: 0 auto; /* Center the image */
         }
     </style>
-        <script>
-            function removeFromFavorites(productId) {
-                fetch('/favorites/remove', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ productId })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        // Remove the item from the DOM
-                        document.getElementById(`favorite-item-${productId}`).remove();
-                    } else {
-                        alert('Failed to remove favorite');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
-            }
-        </script>
 </head>
 <body>
-    <body>
-        <h1>Mes Favoris</h1>
-        <ul>
-            <% if (favoriteItems.length > 0) { %>
-                <% favoriteItems.forEach(item => { %>
-                    <li id="favorite-item-<%= item.id_product %>">
-                        <h2><%= item.name %></h2>
-                        <p>Price: <%= item.price %> <%= item.currency %></p>
-                        <img src="<%= item.image_url %>" alt="<%= item.name %>">
-                        <button onclick="removeFromFavorites(<%= item.id_product %>)">Remove</button>
-                    </li>
-                <% }); %>
-            <% } else { %>
-                <p>Vous n'avez pas de favoris.</p>
-            <% } %>
-        </ul>
-        <a href="/">Retourner à la boutique</a>
-    </body>
+    <h1>Mes Favoris</h1>
+    <ul>
+        <% favoriteItems.forEach(item => { %>
+            <li>
+                <img src="<%= item.image_url %>" alt="<%= item.name %>">
+                <h2><%= item.name %></h2>
+                <p>Price: <%= item.price %> <%= item.currency %></p>
+                <form action="/favorites/remove" method="post">
+                    <input type="hidden" name="productId" value="<%= item.productId %>">
+                    <button type="submit">Remove</button>
+                </form>
+            </li>
+        <% }) %>
+    </ul>
+    <a href="/">Continue Shopping</a>
 </body>
 </html>

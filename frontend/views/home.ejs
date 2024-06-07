@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Home</title>
     <link rel="stylesheet" href="/css/styles.css">
+<<<<<<< HEAD
 </head>
 <body>
     <header>
@@ -49,5 +50,83 @@
             <% }) %>
         </div>
     </main>
+=======
+    <style>
+        img {
+            max-width: 200px;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <a href="/cart">View Cart</a>
+    <a href="/favorites">View Favorites</a>
+    <h1>Product Catalog</h1>
+
+    <form action="/filter" method="POST">
+        <label for="category">Category:</label>
+        <select name="category" id="category">
+            <option value="">All</option>
+            <% categories.forEach(category => { %>
+                <option value="<%= category.id_category %>" <%= selectedCategory == category.id_category ? 'selected' : '' %>><%= category.label %></option>
+            <% }) %>
+        </select>
+
+        <label for="color">Color:</label>
+        <select name="color" id="color">
+            <option value="">All</option>
+            <% colors.forEach(color => { %>
+                <option value="<%= color.id_color %>" <%= selectedColor == color.id_color ? 'selected' : '' %>><%= color.label %></option>
+            <% }) %>
+        </select>
+
+        <button type="submit">Filter</button>
+    </form>
+
+    <ul>
+        <% products.forEach(product => { %>
+            <li>
+                <h2><%= product.name %></h2>
+                <img src="<%= product.images.split(',')[0] %>" alt="<%= product.name %>">
+                <% if (product.sizes && product.sizes.length > 0) { %>
+                    <% const defaultSize = product.sizes.find(size => size.label === 'S'); %>
+                    <% if (defaultSize) { %>
+                        <p>Price: <span id="price-<%= product.id_product %>"><%= defaultSize.price %> <%= product.currency %></span></p>
+                    <% } else { %>
+                        <p>No size S available</p>
+                    <% } %>
+                    <label for="size-<%= product.id_product %>">Size:</label>
+                    <select name="size" id="size-<%= product.id_product %>" onchange="updatePrice('<%= product.id_product %>', this.value)">
+                        <% product.sizes.forEach(size => { %>
+                            <option value="<%= size.label %>"><%= size.label %></option>
+                        <% }) %>
+                    </select>
+                <% } else { %>
+                    <p>No sizes available</p>
+                <% } %>
+                <a href="/product/<%= product.id_product %>">View Details</a>
+                <form action="/cart/add/<%= product.id_product %>" method="POST">
+                    <button type="submit">Add to Cart</button>
+                </form>
+                <form action="/favorites/add/<%= product.id_product %>" method="POST">
+                    <button type="submit">Add to Favorites</button>
+                </form>
+            </li>
+        <% }) %>
+    </ul>
+
+    <script>
+        function updatePrice(productId, sizeLabel) {
+            fetch(`/api/price?productId=${productId}&size=${sizeLabel}`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById(`price-${productId}`).innerText = data.price + ' ' + data.currency;
+                })
+                .catch(error => console.error('Error fetching price:', error));
+        }
+    </script>
+>>>>>>> parent of b926874 (fonctionnalité ok)
 </body>
 </html>

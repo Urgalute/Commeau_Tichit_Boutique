@@ -1,7 +1,9 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title><%= product.name %> - Product Details</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Détails du Produit</title>
     <link rel="stylesheet" href="/css/styles.css">
     <style>
         img {
@@ -13,11 +15,20 @@
     </style>
 </head>
 <body>
+<<<<<<< HEAD
     <a href="/cart">View Cart</a>
     <a href="/favorites">View Favorites</a>
+=======
+>>>>>>> parent of b926874 (fonctionnalité ok)
     <h1><%= product.name %></h1>
-    <img src="<%= product.images.split(',')[0] %>" alt="<%= product.name %>">
+    <% if (product.images) { 
+        const imageArray = product.images.split(','); 
+        imageArray.forEach(image => { %>
+            <img src="<%= image %>" alt="<%= product.name %>">
+        <% });
+    } %>
     <p><%= product.description %></p>
+<<<<<<< HEAD
     <% if (product.final_price) { %>
         <p><del>Original Price: <%= product.currency %> <%= product.price %></del></p>
         <p>Promotional Price: <%= product.currency %> <%= product.final_price %></p>
@@ -105,5 +116,10 @@
             });
         }
     </script>
+=======
+    <p>Prix : <%= product.promotional_price ? product.promotional_price : product.price %> <%= product.currency %></p>
+    <p>En stock : <%= product.stock %></p>
+    <a href="/">Retour au catalogue</a>
+>>>>>>> parent of b926874 (fonctionnalité ok)
 </body>
 </html>
