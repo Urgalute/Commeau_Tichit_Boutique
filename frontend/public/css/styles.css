@@ -1,6 +1,13 @@
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&display=swap');
+
+h1, h2, h3, h4, h5, h6 {
+  font-family:  'Caveat', bold;
+}
+
 body {
-  font-family: Arial, sans-serif;
+  font-family: 'Caveat', bold;
   background-image: url('/images/fond.jpg');
+  background-color: rgba(255, 255, 255, 0.5); /* Ajustez l'opacité selon vos besoins */
   background-size: cover; 
   background-repeat: no-repeat; 
   background-position: center center;
@@ -37,14 +44,14 @@ h1 {
 }
 
 .logo { 
-  width: 150px;
+  width: 200px;
   height: auto;
   border-radius: 50%;
   margin: 0 10px;
 }  
 
 header img {
-  width: 100px; 
+  width: 120px; 
   height: auto; 
   border-radius: 50%; 
   margin: 0 10px; 
@@ -56,7 +63,8 @@ form {
   padding: 20px;
   background: #F7E1CD;
   box-shadow: 0 0 10px #f7e1cd(0, 0, 0, 0.1);
-  width: 200px;
+  width: 210px;
+  border-radius: 8px;
 }
 fieldset {
   margin-bottom: 20px;
@@ -151,8 +159,8 @@ input[type="password"] {
 }
 
 .product-item button {
-  background-color: #4CAF50;
-  color: white;
+  background-color: #f8d5a3;
+  color: black;
   border: none;
   padding: 10px 20px;
   cursor: pointer;
@@ -161,7 +169,7 @@ input[type="password"] {
 }
 
 .product-item button:hover {
-  background-color: #45a049;
+  background-color: #f4ac78;
 }
 
 
@@ -184,6 +192,28 @@ input[type="password"] {
   margin: 0 auto;
 }
 
+.product-link {
+  text-decoration: none;
+  color: black;
+  font-family: 'Caveat', bold;
+}
+
+.product-link,
+.button-common {
+  text-decoration: none;
+  color: black;
+  font-family: 'Caveat', cursive;
+  font-weight: 400; 
+}
+
+.product-link:hover,
+.product-link:focus,
+.button-common:hover,
+.button-common:focus {
+  text-decoration: none;
+  color: black;
+}
+
 .pagination {
   text-align: center;
   margin-top: 20px;
@@ -199,6 +229,12 @@ input[type="password"] {
 }
 
 .pagination a.active {
-  background: white;
+  background: gold;
   color: gold;
+}
+
+footer{
+  color: white;
+  display: flex;
+  justify-content: center;
 }

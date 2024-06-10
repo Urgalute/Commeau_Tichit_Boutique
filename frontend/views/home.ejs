@@ -5,6 +5,9 @@
     <meta charset="UTF-8">
     <title>Home</title>
     <link rel="stylesheet" href="/css/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&display=swap" rel="stylesheet">
 </head>
 
 <body>
@@ -14,10 +17,10 @@
                 <div class="filtre">
                     <form id="filterForm" action="/" method="GET">
                         <fieldset>
-                            <legend>Category:</legend>
+                            <legend>Categorie :</legend>
                             <label>
                                 <input type="checkbox" name="category" value="" id="allCategories" onchange="toggleCategory(this)" <%= selectedCategory.length === 0 ? 'checked' : '' %>>
-                                All Categories
+                                Toutes les catégories
                             </label>
                             <% categories.forEach(category => { %>
                                 <label>
@@ -28,10 +31,10 @@
                         </fieldset>
             
                         <fieldset>
-                            <legend>Color:</legend>
+                            <legend>Couleur :</legend>
                             <label>
                                 <input type="checkbox" name="color" value="" id="allColors" onchange="toggleColor(this)" <%= selectedColor.length === 0 ? 'checked' : '' %>>
-                                All Colors
+                                Toutes les couleurs
                             </label>
                             <% colors.forEach(color => { %>
                                 <label>
@@ -42,26 +45,26 @@
                         </fieldset>
             
                         <fieldset>
-                            <legend>Sort By:</legend>
+                            <legend>Trier par :</legend>
                             <label>
                                 <input type="radio" name="sort" value="default" onchange="document.getElementById('filterForm').submit()" <%= sortOrder === 'default' ? 'checked' : '' %>>
-                                Default
+                                Par défaut
                             </label>
                             <label>
                                 <input type="radio" name="sort" value="price_asc" onchange="document.getElementById('filterForm').submit()" <%= sortOrder === 'price_asc' ? 'checked' : '' %>>
-                                Price: Low to High
+                                Prix croissant 
                             </label>
                             <label>
                                 <input type="radio" name="sort" value="price_desc" onchange="document.getElementById('filterForm').submit()" <%= sortOrder === 'price_desc' ? 'checked' : '' %>>
-                                Price: High to Low
+                                Prix décroissant
                             </label>
                             <label>
                                 <input type="radio" name="sort" value="name_asc" onchange="document.getElementById('filterForm').submit()" <%= sortOrder === 'name_asc' ? 'checked' : '' %>>
-                                Name: A to Z
+                                Nom: A à Z
                             </label>
                             <label>
                                 <input type="radio" name="sort" value="name_desc" onchange="document.getElementById('filterForm').submit()" <%= sortOrder === 'name_desc' ? 'checked' : '' %>>
-                                Name: Z to A
+                                Nom: Z à A
                             </label>
                         </fieldset>
                     </form>
@@ -70,23 +73,23 @@
                 <div class="product-list">
                     <% products.forEach(product => { %>
                         <div class="product-item">
-                            <h3><a href="/product/<%= product.id_product %>"><%= product.name %></a></h3>
+                            <h3><a href="/product/<%= product.id_product %>" class="product-link"><%= product.name %></a></h3>
                             <div class="product-image" style="background-image: url('<%= product.images.split(',')[0] %>');"></div>
                             <% if (product.sizes && product.sizes.length > 0) { %>
                                 <form action="/cart/add/<%= product.id_product %>" method="POST">
-                                    <label for="size-<%= product.id_product %>">Size:</label>
+                                    <label for="size-<%= product.id_product %>">Taille :</label>
                                     <select name="size" id="size-<%= product.id_product %>" onchange="updatePrice('<%= product.id_product %>', this.value)">
                                         <% product.sizes.forEach(size => { %>
                                             <option value="<%= size.label %>"><%= size.label %></option>
                                         <% }) %>
                                     </select>
                                     <p>Price: <span id="price-<%= product.id_product %>"><%= product.price %> <%= product.currency %></span></p>
-                                    <button type="submit">Add to Cart</button>
+                                    <button type="submit" class="button-common">Add to Cart</button>
                                 </form>
                             <% } else { %>
                                 <p>No sizes available</p>
                             <% } %>
-                            <button class="add-to-favorites" data-id="<%= product.id_product %>">Add to Favorites</button>
+                            <button class="add-to-favorites button-common" data-id="<%= product.id_product %>">Add to Favorites</button>
                         </div>
                     <% }) %>
                 </div>
