@@ -13,6 +13,7 @@
     </style>
 </head>
 <body>
+    <%- include('partials/header') %>
     <h1>Confirmation du Panier</h1>
     <ul>
         <% cartItems.forEach(item => { %>
@@ -53,5 +54,6 @@
             </li>
         <% }) %>
     </ul>
+    <%- include('partials/footer') %>
 </body>
 </html>

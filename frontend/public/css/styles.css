@@ -1,21 +1,78 @@
 body {
   font-family: Arial, sans-serif;
-  background-color: #f4f4f4;
-  margin: 0;
-  padding: 20px;
+  background-image: url('/images/fond.jpg');
+  background-size: cover; 
+  background-repeat: no-repeat; 
+  background-position: center center;
+}
+
+.header{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #f7e1cd;
+}
+
+ul.header{
+  padding-right: 40px;
+}
+
+.filtre{
+  display: flex;
+  flex-direction: column;
+  padding-right: 20px;
+  margin-right: 80px;
+  padding-top: 60px;
+}
+
+.home{
+  display: flex;
+  flex-direction: row;
+  padding-top: 60px;
 }
 
 h1 {
   text-align: center;
 }
 
+.logo { 
+  width: 150px;
+  height: auto;
+  border-radius: 50%;
+  margin: 0 10px;
+}  
+
+header img {
+  width: 100px; 
+  height: auto; 
+  border-radius: 50%; 
+  margin: 0 10px; 
+}
+
 form {
   max-width: 400px;
   margin: 0 auto;
   padding: 20px;
-  background: #fff;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  background: #F7E1CD;
+  box-shadow: 0 0 10px #f7e1cd(0, 0, 0, 0.1);
+  width: 200px;
 }
+fieldset {
+  margin-bottom: 20px;
+  padding: 10px;
+  border: 1px solid #f7e1cd;
+}
+
+legend {
+  font-weight: bold;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+}
+
 
 div {
   margin-bottom: 15px;
@@ -34,21 +91,77 @@ input[type="password"] {
   box-sizing: border-box;
 }
 
-button {
+.product-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+}
+
+.product-item {
+  padding-right: 15px;
+  width: 350px;
+  height: 650px;
+  background-color: #f7e1cd;
+  padding: 15px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.product-item:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+}
+
+.product-item .product-image {
   width: 100%;
-  padding: 10px;
-  background: #5cb85c;
-  color: #fff;
-  border: none;
-  cursor: pointer;
+  padding-top: 100%; /* 1:1 Aspect Ratio */
+  background-size: cover;
+  background-position: center;
+  border-radius: 8px;
+  margin-bottom: 15px;
 }
 
-button:hover {
-  background: #4cae4c;
-}
-
-p {
+.product-item h3 {
+  font-size: 1.2em;
+  margin-bottom: 10px;
   text-align: center;
+}
+
+.product-item p {
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.product-item form {
+  width: 80%;
+  margin-top: 20px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.product-item select,
+.product-item button {
+  margin: 5px 0;
+}
+
+.product-item button {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+}
+
+.product-item button:hover {
+  background-color: #45a049;
 }
 
 
@@ -59,7 +172,7 @@ p {
 }
 
 .product-item {
-  width: 30%; /* Ajustez ce pourcentage pour le nombre d'éléments par ligne */
+  width: 25%; /* Ajustez ce pourcentage pour le nombre d'éléments par ligne */
   margin-bottom: 20px;
   text-align: center; /* Centre le texte et les images à l'intérieur de l'élément */
 }
@@ -69,4 +182,23 @@ p {
   height: auto;
   display: block;
   margin: 0 auto;
+}
+
+.pagination {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.pagination a {
+  margin: 0 5px;
+  text-decoration: none;
+  padding: 5px 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  color: white;
+}
+
+.pagination a.active {
+  background: white;
+  color: gold;
 }

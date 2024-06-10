@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Your Cart</title>
+    <title>Votre Panier</title>
     <link rel="stylesheet" href="/css/styles.css">
     <style>
         img {
@@ -13,44 +13,46 @@
     </style>
 </head>
 <body>
-    <h1>Your Cart</h1>
-    <a href="/">Continue Shopping</a>
-    <% if (cartItems && cartItems.length > 0) { %>
+    <%- include('partials/header') %>
+    <main>
+        <h1>Your Cart</h1>
         <ul>
-            <% let totalAmount = 0; %>
-            <% cartItems.forEach(item => { %>
-                <% totalAmount += item.price * item.quantity; %>
-                <li>
-                    <img src="<%= item.image_url %>" alt="<%= item.name %>">
-                    <p>Product: <%= item.name %></p>
-                    <p>Size: <%= item.size %></p>
-                    <p>Price: <%= item.price %> <%= item.currency %></p>
-                    <p>Quantity:</p>
-                    <form action="/cart/update/<%= item.id_product %>" method="POST">
-                        <input type="hidden" name="size" value="<%= item.size %>">
-                        <input type="number" name="quantity" value="<%= item.quantity %>" min="1">
-                        <button type="submit">Update Quantity</button>
-                    </form>
-                    <form action="/cart/remove" method="post">
-                        <input type="hidden" name="productId" value="<%= item.id_product %>">
-                        <input type="hidden" name="size" value="<%= item.size %>">
-                        <button type="submit">Remove</button>
-                    </form>
-                </li>
-            <% }); %>
-            <li>
-                <h2>Total Amount: <%= totalAmount.toFixed(2) %> <%= cartItems[0].currency %></h2>
-            </li>
-            <li>
-                <h2>Shipping Fees: 5.90 €</h2>
-            </li>
-            <li>
-                <h2>Grand Total: <%= (totalAmount + 5.90).toFixed(2) %> <%= cartItems[0].currency %></h2>
-            </li>
+            <a href="/">Continue Shopping</a>
+            <h1>Your Cart</h1>
+            <ul>
+                <% if (cartItems && cartItems.length > 0) { %>
+                    <ul>
+                        <% cartItems.forEach(item => { %>
+                            <li>
+                                <img src="<%= item.image_url %>" alt="<%= item.name %>">
+                                <p>Product: <%= item.name %></p>
+                                <p>Size: <%= item.size %></p>
+                                <p>Price: <%= item.price %> <%= item.currency %></p>
+                                <p>Quantity: <%= item.quantity %></p>
+                                <form action="/cart/remove" method="post">
+                                    <input type="hidden" name="productId" value="<%= item.id_product %>">
+                                    <input type="hidden" name="size" value="<%= item.size %>">
+                                    <button type="submit">Remove</button>
+                                </form>
+                                <form action="/cart/update/<%= item.id_product %>" method="post">
+                                    <input type="hidden" name="productId" value="<%= item.id_product %>">
+                                    <input type="hidden" name="size" value="<%= item.size %>">
+                                    <input type="number" name="quantity" value="<%= item.quantity %>" min="1">
+                                    <button type="submit">Update</button>
+                                </form>
+                            </li>
+                        <% }); %>
+                    </ul>
+                    <h2>Subtotal: <%= subtotal %> EUR</h2>
+                    <h2>Shipping: 5.90 EUR</h2>
+                    <h2>Total: <%= total %> EUR</h2>
+                    <a href="/cart/confirm">Valider mon panier</a>
+                <% } else { %>
+                    <p>Your cart is empty</p>
+                <% } %>
+            </ul>
         </ul>
-        <a href="/cart/confirm">Proceed to Checkout</a>
-    <% } else { %>
-        <p>Your cart is empty</p>
-    <% } %>
+    </main>
+    <%- include('partials/footer') %>
 </body>
 </html>

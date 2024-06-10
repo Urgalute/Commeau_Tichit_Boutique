@@ -5,10 +5,12 @@
     <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
+    <%- include('partials/header') %>
     <h1>Payment</h1>
     <h2>Adresse de Livraison</h2>
     <p><%= selectedAddress.address_line1 %>, <%= selectedAddress.address_line2 %>, <%= selectedAddress.city %>, <%= selectedAddress.state %>, <%= selectedAddress.postal_code %>, <%= selectedAddress.country %></p>
 
     <!-- Ici vous pouvez ajouter votre formulaire de paiement ou une redirection vers un fournisseur de paiement -->
+    <%- include('partials/footer') %>
 </body>
 </html>

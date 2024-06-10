@@ -1,6 +1,6 @@
 const db = require('../config/db');
 
-const getAllProducts = (sortOrder, category, color, limit, offset) => {
+const getAllProducts = (sortOrder, categories, colors, limit, offset) => {
     return new Promise((resolve, reject) => {
         let query = `
             SELECT product.*, GROUP_CONCAT(DISTINCT product_images.image_url) AS images, MIN(asso_size.price) AS price
@@ -14,14 +14,14 @@ const getAllProducts = (sortOrder, category, color, limit, offset) => {
 
         const queryParams = [];
 
-        if (category) {
-            query += ' AND product.id_category = ?';
-            queryParams.push(category);
+        if (categories.length > 0) {
+            query += ' AND product.id_category IN (?)';
+            queryParams.push(categories);
         }
 
-        if (color) {
-            query += ' AND asso_color.id_color = ?';
-            queryParams.push(color);
+        if (colors.length > 0) {
+            query += ' AND asso_color.id_color IN (?)';
+            queryParams.push(colors);
         }
 
         query += ' GROUP BY product.id_product';
@@ -55,17 +55,17 @@ const getAllProducts = (sortOrder, category, color, limit, offset) => {
 exports.getAllProducts = async (req, res) => {
     try {
         const sortOrder = req.query.sort || 'default';
-        const category = req.query.category || '';
-        const color = req.query.color || '';
+        const categories = req.query.category ? (Array.isArray(req.query.category) ? req.query.category : [req.query.category]) : [];
+        const colors = req.query.color ? (Array.isArray(req.query.color) ? req.query.color : [req.query.color]) : [];
         const page = parseInt(req.query.page) || 1;
         const limit = 9;
         const offset = (page - 1) * limit;
 
-        const [products, categories, colors, totalCount] = await Promise.all([
-            getAllProducts(sortOrder, category, color, limit, offset),
+        const [products, categoriesList, colorsList, totalCount] = await Promise.all([
+            getAllProducts(sortOrder, categories, colors, limit, offset),
             getAllCategories(),
             getAllColors(),
-            getProductCount(category, color)
+            getProductCount(categories, colors)
         ]);
 
         const totalPages = Math.ceil(totalCount / limit);
@@ -77,10 +77,10 @@ exports.getAllProducts = async (req, res) => {
 
         res.render('home', {
             products: productsWithSizes,
-            categories,
-            colors,
-            selectedCategory: category,
-            selectedColor: color,
+            categories: categoriesList,
+            colors: colorsList,
+            selectedCategory: categories,
+            selectedColor: colors,
             sortOrder,
             currentPage: page,
             totalPages
@@ -90,6 +90,9 @@ exports.getAllProducts = async (req, res) => {
         res.status(500).json({ message: 'Error fetching products', error: err });
     }
 };
+
+
+
 
 const getSizesByProductId = (productId) => {
     return new Promise((resolve, reject) => {
@@ -123,7 +126,6 @@ const getAllCategories = () => {
     });
 };
 
-
 const getAllColors = () => {
     return new Promise((resolve, reject) => {
         const query = 'SELECT * FROM color';
@@ -136,6 +138,7 @@ const getAllColors = () => {
         });
     });
 };
+
 
 exports.filterProducts = async (req, res) => {
     try {
@@ -296,20 +299,20 @@ exports.getPriceByProductIdAndSize = (productId, sizeLabel) => {
     });
 };
 
-const getProductCount = (category, color) => {
+const getProductCount = (categories, colors) => {
     return new Promise((resolve, reject) => {
         let query = 'SELECT COUNT(DISTINCT product.id_product) AS count FROM product';
         let conditions = [];
         let params = [];
 
-        if (category) {
-            conditions.push('product.id_category = ?');
-            params.push(category);
+        if (categories.length > 0) {
+            conditions.push('product.id_category IN (?)');
+            params.push(categories);
         }
 
-        if (color) {
-            conditions.push('product.id_product IN (SELECT id_product FROM asso_color WHERE id_color = ?)');
-            params.push(color);
+        if (colors.length > 0) {
+            conditions.push('product.id_product IN (SELECT id_product FROM asso_color WHERE id_color IN (?))');
+            params.push(colors);
         }
 
         if (conditions.length > 0) {

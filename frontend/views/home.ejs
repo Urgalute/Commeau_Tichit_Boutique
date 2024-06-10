@@ -1,77 +1,106 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Home</title>
     <link rel="stylesheet" href="/css/styles.css">
 </head>
+
 <body>
-    <header>
-        <h1>Welcome to Our Shop</h1>
-        <nav>
-            <ul>
-                <li><a href="/">Home</a></li>
-                <li><a href="/cart">Cart</a></li>
-                <li><a href="/favorites">Favorites</a></li>
-            </ul>
-        </nav>
-    </header>
-    <main>
-        <h2>Products</h2>
-        <form id="filterForm" action="/" method="GET">
-            <label for="category">Category:</label>
-            <select name="category" id="category" onchange="document.getElementById('filterForm').submit()">
-                <option value="">All Categories</option>
-                <% categories.forEach(category => { %>
-                    <option value="<%= category.id_category %>" <%= selectedCategory == category.id_category ? 'selected' : '' %>><%= category.label %></option>
-                <% }) %>
-            </select>
-            <label for="color">Color:</label>
-            <select name="color" id="color" onchange="document.getElementById('filterForm').submit()">
-                <option value="">All Colors</option>
-                <% colors.forEach(color => { %>
-                    <option value="<%= color.id_color %>" <%= selectedColor == color.id_color ? 'selected' : '' %>><%= color.label %></option>
-                <% }) %>
-            </select>
-            <label for="sortOrder">Sort By:</label>
-            <select name="sort" id="sortOrder" onchange="document.getElementById('filterForm').submit()">
-                <option value="default" <%= sortOrder === 'default' ? 'selected' : '' %>>Default</option>
-                <option value="price_asc" <%= sortOrder === 'price_asc' ? 'selected' : '' %>>Price: Low to High</option>
-                <option value="price_desc" <%= sortOrder === 'price_desc' ? 'selected' : '' %>>Price: High to Low</option>
-                <option value="name_asc" <%= sortOrder === 'name_asc' ? 'selected' : '' %>>Name: A to Z</option>
-                <option value="name_desc" <%= sortOrder === 'name_desc' ? 'selected' : '' %>>Name: Z to A</option>
-            </select>
-        </form>
-        <div class="product-list">
-            <% products.forEach(product => { %>
-                <div class="product-item">
-                    <h3><a href="/product/<%= product.id_product %>"><%= product.name %></a></h3>
-                    <img src="<%= product.images.split(',')[0] %>" alt="<%= product.name %>">
-                    <% if (product.sizes && product.sizes.length > 0) { %>
-                        <form action="/cart/add/<%= product.id_product %>" method="POST">
-                            <label for="size-<%= product.id_product %>">Size:</label>
-                            <select name="size" id="size-<%= product.id_product %>" onchange="updatePrice('<%= product.id_product %>', this.value)">
-                                <% product.sizes.forEach(size => { %>
-                                    <option value="<%= size.label %>"><%= size.label %></option>
-                                <% }) %>
-                            </select>
-                            <p>Price: <span id="price-<%= product.id_product %>"><%= product.price %> <%= product.currency %></span></p>
-                            <button type="submit">Add to Cart</button>
-                        </form>
-                    <% } else { %>
-                        <p>No sizes available</p>
-                    <% } %>
-                    <button class="add-to-favorites" data-id="<%= product.id_product %>">Add to Favorites</button>
+    <%- include('partials/header') %>
+        <main>
+            <div class="home">
+                <div class="filtre">
+                    <form id="filterForm" action="/" method="GET">
+                        <fieldset>
+                            <legend>Category:</legend>
+                            <label>
+                                <input type="checkbox" name="category" value="" id="allCategories" onchange="toggleCategory(this)" <%= selectedCategory.length === 0 ? 'checked' : '' %>>
+                                All Categories
+                            </label>
+                            <% categories.forEach(category => { %>
+                                <label>
+                                    <input type="checkbox" name="category" value="<%= category.id_category %>" class="categoryCheckbox" onchange="toggleCategory(this)" <%= selectedCategory.includes(category.id_category.toString()) ? 'checked' : '' %>>
+                                    <%= category.label %>
+                                </label>
+                            <% }) %>
+                        </fieldset>
+            
+                        <fieldset>
+                            <legend>Color:</legend>
+                            <label>
+                                <input type="checkbox" name="color" value="" id="allColors" onchange="toggleColor(this)" <%= selectedColor.length === 0 ? 'checked' : '' %>>
+                                All Colors
+                            </label>
+                            <% colors.forEach(color => { %>
+                                <label>
+                                    <input type="checkbox" name="color" value="<%= color.id_color %>" class="colorCheckbox" onchange="toggleColor(this)" <%= selectedColor.includes(color.id_color.toString()) ? 'checked' : '' %>>
+                                    <%= color.label %>
+                                </label>
+                            <% }) %>
+                        </fieldset>
+            
+                        <fieldset>
+                            <legend>Sort By:</legend>
+                            <label>
+                                <input type="radio" name="sort" value="default" onchange="document.getElementById('filterForm').submit()" <%= sortOrder === 'default' ? 'checked' : '' %>>
+                                Default
+                            </label>
+                            <label>
+                                <input type="radio" name="sort" value="price_asc" onchange="document.getElementById('filterForm').submit()" <%= sortOrder === 'price_asc' ? 'checked' : '' %>>
+                                Price: Low to High
+                            </label>
+                            <label>
+                                <input type="radio" name="sort" value="price_desc" onchange="document.getElementById('filterForm').submit()" <%= sortOrder === 'price_desc' ? 'checked' : '' %>>
+                                Price: High to Low
+                            </label>
+                            <label>
+                                <input type="radio" name="sort" value="name_asc" onchange="document.getElementById('filterForm').submit()" <%= sortOrder === 'name_asc' ? 'checked' : '' %>>
+                                Name: A to Z
+                            </label>
+                            <label>
+                                <input type="radio" name="sort" value="name_desc" onchange="document.getElementById('filterForm').submit()" <%= sortOrder === 'name_desc' ? 'checked' : '' %>>
+                                Name: Z to A
+                            </label>
+                        </fieldset>
+                    </form>
+                    
                 </div>
-            <% }) %>
-        </div>
-        <div class="pagination">
-            <% for(let i = 1; i <= totalPages; i++) { %>
-                <a href="/?page=<%= i %>&sort=<%= sortOrder %>&category=<%= selectedCategory %>&color=<%= selectedColor %>" <%= currentPage === i ? 'class="active"' : '' %>><%= i %></a>
-            <% } %>
-        </div>
-    </main>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+                <div class="product-list">
+                    <% products.forEach(product => { %>
+                        <div class="product-item">
+                            <h3><a href="/product/<%= product.id_product %>"><%= product.name %></a></h3>
+                            <div class="product-image" style="background-image: url('<%= product.images.split(',')[0] %>');"></div>
+                            <% if (product.sizes && product.sizes.length > 0) { %>
+                                <form action="/cart/add/<%= product.id_product %>" method="POST">
+                                    <label for="size-<%= product.id_product %>">Size:</label>
+                                    <select name="size" id="size-<%= product.id_product %>" onchange="updatePrice('<%= product.id_product %>', this.value)">
+                                        <% product.sizes.forEach(size => { %>
+                                            <option value="<%= size.label %>"><%= size.label %></option>
+                                        <% }) %>
+                                    </select>
+                                    <p>Price: <span id="price-<%= product.id_product %>"><%= product.price %> <%= product.currency %></span></p>
+                                    <button type="submit">Add to Cart</button>
+                                </form>
+                            <% } else { %>
+                                <p>No sizes available</p>
+                            <% } %>
+                            <button class="add-to-favorites" data-id="<%= product.id_product %>">Add to Favorites</button>
+                        </div>
+                    <% }) %>
+                </div>
+        
+            </div>
+            <div class="pagination">
+                <% for(let i=1; i <=totalPages; i++) { %>
+                    <a href="/?page=<%= i %>&sort=<%= sortOrder %>&category=<%= selectedCategory %>&color=<%= selectedColor %>"
+                        <%=currentPage===i ? 'class="active"' : '' %>><%= i %></a>
+                    <% } %>
+            </div>
+        </main>
+        <%- include('partials/footer') %>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         function updatePrice(productId, size) {
             $.ajax({
@@ -85,6 +114,42 @@
                     alert('An error occurred while fetching the price');
                 }
             });
+        }
+
+        function toggleCategory(checkbox) {
+            const allCategoriesCheckbox = document.getElementById('allCategories');
+            const categoryCheckboxes = document.querySelectorAll('.categoryCheckbox');
+
+            if (checkbox === allCategoriesCheckbox) {
+                categoryCheckboxes.forEach(cb => cb.checked = false);
+            } else {
+                allCategoriesCheckbox.checked = false;
+            }
+
+            const anyChecked = Array.from(categoryCheckboxes).some(cb => cb.checked);
+            if (!anyChecked) {
+                allCategoriesCheckbox.checked = true;
+            }
+
+            document.getElementById('filterForm').submit();
+        }
+
+        function toggleColor(checkbox) {
+            const allColorsCheckbox = document.getElementById('allColors');
+            const colorCheckboxes = document.querySelectorAll('.colorCheckbox');
+
+            if (checkbox === allColorsCheckbox) {
+                colorCheckboxes.forEach(cb => cb.checked = false);
+            } else {
+                allColorsCheckbox.checked = false;
+            }
+
+            const anyChecked = Array.from(colorCheckboxes).some(cb => cb.checked);
+            if (!anyChecked) {
+                allColorsCheckbox.checked = true;
+            }
+
+            document.getElementById('filterForm').submit();
         }
 
         $(document).ready(function() {
@@ -105,4 +170,5 @@
         });
     </script>
 </body>
+
 </html>

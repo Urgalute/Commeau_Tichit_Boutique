@@ -5,6 +5,7 @@
     <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
+    <%- include('partials/header') %>
     <h1>Your Addresses</h1>
     <form action="/addresses/add" method="POST">
         <label for="address_line1">Address Line 1:</label>
@@ -30,5 +31,6 @@
             </li>
         <% }) %>
     </ul>
+    <%- include('partials/footer') %>
 </body>
 </html>
