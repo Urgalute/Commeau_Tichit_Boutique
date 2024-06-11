@@ -1,114 +1,124 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Détails du Produit</title>
+    <title>Détail du produit</title>
     <link rel="stylesheet" href="/css/styles.css">
-    <style>
-        img {
-            max-width: 200px;
-            height: auto;
-            display: block;
-            margin: 0 auto;
-        }
-    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&display=swap" rel="stylesheet">
 </head>
+
 <body>
     <%- include('partials/header') %>
-    <h1><%= product.name %></h1>
-    <% if (product.images) { 
-        const imageArray = product.images.split(','); 
-        imageArray.forEach(image => { %>
-            <img src="<%= product.images.split(',')[0] %>" alt="<%= product.name %>">
-        <% });
-    } %>
-    <p><%= product.description %></p>
-    <% if (product.sizes && product.sizes.length > 0) { %>
-        <% const defaultSize = product.sizes.find(size => size.label === 'S'); %>
-        <% if (defaultSize) { %>
-            <p>Price: <span id="price-<%= product.id_product %>"><%= defaultSize.price %> <%= product.currency %></span></p>
-        <% } else { %>
-            <p>No size S available</p>
-        <% } %>
-        <label for="size-<%= product.id_product %>">Size:</label>
-        <select name="size" id="size-<%= product.id_product %>" onchange="updatePrice('<%= product.id_product %>', this.value)">
-            <% product.sizes.forEach(size => { %>
-                <option value="<%= size.label %>"><%= size.label %></option>
-            <% }) %>
-        </select>
-    <% } else { %>
-        <p>No sizes available</p>
-    <% } %>
-    <form action="/cart/add/<%= product.id_product %>" method="POST">
-        <button type="submit">Add to Cart</button>
-    </form>
-    <button class="add-to-favorites" data-id="<%= product.id_product %>">Add to Favorites</button>
+        <main>
+            <div class="product-detail">
+                <div class="image-detail">
+                    <% if (product.images) { const imageArray=product.images.split(','); imageArray.forEach(image=> { %>
+                        <div class="image-container" style="background-image: url('<%= image %>');"></div>
+                        <% }); } %>
+                </div>
+                <div class="text-detail">
+                    <p>
+                        <%= product.description %>
+                    </p>
+                    <div class="price-detail">
+                        <% if (product.sizes && product.sizes.length> 0) { %>
+                            <% const defaultSize=product.sizes.find(size=> size.label === 'S'); %>
+                                <% if (defaultSize) { %>
 
-    <h2>Recommended Products</h2>
-    <ul>
-        <% recommendedProducts.forEach(recommendedProduct => { %>
-            <li>
-                <h3><%= recommendedProduct.name %></h3>
-                <img src="<%= recommendedProduct.images.split(',')[0] %>" alt="<%= recommendedProduct.name %>">
-                <% if (recommendedProduct.sizes && recommendedProduct.sizes.length > 0) { %>
-                    <% const defaultSize = recommendedProduct.sizes.find(size => size.label === 'S'); %>
-                    <% if (defaultSize) { %>
-                        <p>Price: <span id="price-<%= recommendedProduct.id_product %>"><%= defaultSize.price %> <%= recommendedProduct.currency %></span></p>
-                    <% } else { %>
-                        <p>No size S available</p>
-                    <% } %>
-                <% } else { %>
-                    <p>No sizes available</p>
-                <% } %>
-                <a href="/product/<%= recommendedProduct.id_product %>">View Details</a>
-                <form action="/cart/add/<%= recommendedProduct.id_product %>" method="POST">
-                    <button type="submit">Add to Cart</button>
-                </form>
-                <button class="add-to-favorites" data-id="<%= recommendedProduct.id_product %>">Add to Favorites</button>
-            </li>
-        <% }) %>
-    </ul>
-    <%- include('partials/footer') %>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            $('.add-to-favorites').click(function(event) {
-                event.preventDefault(); // Empêche le comportement par défaut du bouton
-
-                const productId = $(this).data('id');
-
+                                    <% } else { %>
+                                        <p>No size S available</p>
+                                        <% } %>
+                                            <label for="size-<%= product.id_product %>">Taille :</label>
+                                            <select name="size" id="size-<%= product.id_product %>"
+                                                onchange="updatePrice('<%= product.id_product %>', this.value)">
+                                                <% product.sizes.forEach(size=> { %>
+                                                    <option value="<%= size.label %>">
+                                                        <%= size.label %>
+                                                    </option>
+                                                    <% }) %>
+                                            </select>
+                                            <p>Prix : <span id="price-<%= product.id_product %>">
+                                                    <%= defaultSize.price %>
+                                                        <%= product.currency %>
+                                                </span></p>
+                                            <% } else { %>
+                                                <p>No sizes available</p>
+                                                <% } %>
+                    </div>
+                    <div class="button-group">
+                        <form action="/cart/add/<%= product.id_product %>" method="POST">
+                            <button type="submit" class="button-common">Ajouter au
+                                panier</button>
+                        </form>
+                        <button class="add-to-favorites button-common" data-id="<%= product.id_product %>">Ajouter aux
+                            favoris</button>
+                    </div>
+                </div>
+            </div>
+            <div class="recommended-products">
+                <h1 class="recommended">Produits recommandés</h1>
+                <div class="recommended-list">
+                    <% recommendedProducts.slice(0, 5).forEach(recommendedProduct => { %>
+                        <div class="recommended-item">
+                            <a href="/product/<%= recommendedProduct.id_product %>"><h3><%= recommendedProduct.name %></h3></a>
+                            <div class="image-container" style="background-image: url('<%= recommendedProduct.images.split(',')[0] %>');"></div>
+                            <% if (recommendedProduct.sizes && recommendedProduct.sizes.length > 0) { %>
+                                <% const defaultSize = recommendedProduct.sizes.find(size => size.label === 'S'); %>
+                                <% if (defaultSize) { %>
+                                    <p>Prix : <span id="price-<%= recommendedProduct.id_product %>"><%= defaultSize.price %> <%= recommendedProduct.currency %></span></p>
+                                <% } else { %>
+                                    <p>taille S invalide </p>
+                                <% } %>
+                            <% } else { %>
+                                <p>No sizes available</p>
+                            <% } %>
+                            <form action="/cart/add/<%= recommendedProduct.id_product %>" method="POST">
+                                <button type="submit" class="button-common">Add to Cart</button>
+                            </form>
+                            <button class="add-to-favorites button-common" data-id="<%= recommendedProduct.id_product %>">Add to Favorites</button>
+                        </div>
+                    <% }) %>
+                </div>
+            </div>
+        </main>
+        <%- include('partials/footer') %>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script>
+            function updatePrice(productId, size) {
                 $.ajax({
-                    url: '/favorites/add/' + productId,
-                    method: 'POST',
+                    url: '/api/price',
+                    method: 'GET',
+                    data: { productId: productId, size: size },
                     success: function(response) {
-                        if (response.success) {
-                            alert(response.message);
-                        } else {
-                            alert('Failed to add to favorites');
-                        }
+                        $('#price-' + productId).text(response.price + ' ' + response.currency);
                     },
                     error: function() {
-                        alert('An error occurred');
+                        alert('An error occurred while fetching the price');
                     }
                 });
+            }
+    
+            $(document).ready(function() {
+                $('.add-to-favorites').click(function(event) {
+                    event.preventDefault();
+                    const productId = $(this).data('id');
+                    $.ajax({
+                        url: '/favorites/add/' + productId,
+                        method: 'POST',
+                        success: function(response) {
+                            alert(response.message);
+                        },
+                        error: function() {
+                            alert('An error occurred while adding to favorites');
+                        }
+                    });
+                });
             });
-        });
-
-        function updatePrice(productId, size) {
-            $.ajax({
-                url: '/api/price',
-                method: 'GET',
-                data: { productId: productId, size: size },
-                success: function(response) {
-                    $('#price-' + productId).text(response.price + ' ' + response.currency);
-                },
-                error: function() {
-                    alert('An error occurred while fetching the price');
-                }
-            });
-        }
-    </script>
+        </script>
 
 </body>
+
 </html>

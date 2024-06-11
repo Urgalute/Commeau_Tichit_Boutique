@@ -83,13 +83,13 @@
                                             <option value="<%= size.label %>"><%= size.label %></option>
                                         <% }) %>
                                     </select>
-                                    <p>Price: <span id="price-<%= product.id_product %>"><%= product.price %> <%= product.currency %></span></p>
-                                    <button type="submit" class="button-common">Add to Cart</button>
+                                    <p>Prix : <span id="price-<%= product.id_product %>"><%= product.price %> <%= product.currency %></span></p>
+                                    <button type="submit" class="button-common">Ajouter au panier</button>
                                 </form>
                             <% } else { %>
                                 <p>No sizes available</p>
                             <% } %>
-                            <button class="add-to-favorites button-common" data-id="<%= product.id_product %>">Add to Favorites</button>
+                            <button class="add-to-favorites button-common" data-id="<%= product.id_product %>">Ajouter aux favoris</button>
                         </div>
                     <% }) %>
                 </div>
