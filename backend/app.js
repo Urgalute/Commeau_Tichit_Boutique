@@ -9,6 +9,7 @@ const productRoutes = require('./routes/productRoutes');
 const cartRoutes = require('./routes/cartRoutes');
 const favoriteRoutes = require('./routes/favoriteRoutes'); // Assurez-vous que le nom est correct
 const addressRoutes = require('./routes/addressRoutes');
+const paymentRoutes = require('./routes/paymentRoutes'); // Assurez-vous que le nom est correct
 
 console.log('Setting up middleware...');
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -28,10 +29,7 @@ app.use('/', productRoutes);
 app.use('/cart', cartRoutes);
 app.use('/favorites', favoriteRoutes); 
 app.use('/addresses', addressRoutes);
-
-app.get('/payment', (req, res) => {
-    res.render('payment', { selectedAddress: req.session.selectedAddress });
-});
+app.use('/payment', paymentRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
