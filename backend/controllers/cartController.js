@@ -163,9 +163,9 @@ exports.updateQuantity = (req, res) => {
 // Function to view the cart
 exports.viewCart = (req, res) => {
     const cart = req.session.cart || [];
-
+    console.log(cart);
     if (cart.length === 0) {
-        return res.render('cart', { cartItems: [] });
+        return res.render('cart', { cartItems: [], subtotal: 0, shipping: 5.90, total: 5.90 });
     }
 
     const productIds = cart.map(item => item.productId);
@@ -188,12 +188,16 @@ exports.viewCart = (req, res) => {
 
         const cartItems = cart.map(item => {
             const product = products.find(p => p.id_product == item.productId && p.size == item.size);
+            console.log(product)
             return {
                 ...product,
                 quantity: item.quantity
             };
         });
+        const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+        const shipping = 5.90;
+        const total = subtotal + shipping;
 
-        res.render('cart', { cartItems });
+        res.render('cart', { cartItems, subtotal, shipping, total });
     });
 };
