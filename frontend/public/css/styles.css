@@ -399,6 +399,70 @@ button:hover {
   background-color: #f4ac78;
 }
 
+.favorites{
+  color: white;
+}
+
+.favorites-list {
+  margin-left: 20px;
+  margin-right: 20px;
+  margin-top: 30px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: space-between;
+}
+
+.favorite-item {
+  width: calc(20% - 20px);
+  text-align: center;
+  background: #f7e1cd;
+  padding: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border-radius: 8px
+}
+
+.favorite-item h3 {
+  margin: 10px 0;
+}
+
+.favorite-item .image-container {
+  width: 100%;
+  height: 150px;
+  background-size: cover;
+  background-position: center;
+  margin-bottom: 10px;
+}
+
+.favorite-item p {
+  margin: 10px 0;;
+}
+
+.favorite-item form {
+  display: flex;
+  align-items: center;
+  margin: 0;
+}
+
+.favorites-list button {
+  margin-left: 35px;
+  width: 160px;
+  background-color: #f8d5a3;
+  color: black;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+}
+
+.favorites-list button:hover {
+  background-color: #f4ac78;
+}
+
 .pagination {
   text-align: center;
   margin-top: 20px;

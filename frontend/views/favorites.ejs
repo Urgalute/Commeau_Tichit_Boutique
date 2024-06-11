@@ -3,6 +3,9 @@
 <head>
     <title>Mes Favoris</title>
     <link rel="stylesheet" href="/css/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&display=swap" rel="stylesheet">
     <style>
         img {
             max-width: 200px;
@@ -14,20 +17,26 @@
 </head>
 <body>
     <%- include('partials/header') %>
-    <h1>Mes Favoris</h1>
-    <ul>
-        <% favoriteItems.forEach(item => { %>
-            <li>
-                <img src="<%= item.image_url %>" alt="<%= item.name %>">
-                <h2><%= item.name %></h2>
-                <p>Price: <%= item.price %> <%= item.currency %></p>
-                <form action="/favorites/remove" method="post">
-                    <input type="hidden" name="productId" value="<%= item.id_product %>">
-                    <button type="submit">Remove</button>
-                </form>
-            </li>
-        <% }) %>
-    </ul>
+    <main>
+        <h1 class="favorites">Liste des favoris :</h1>
+        <div class="favorites-list">
+            <% if (favoriteItems.length > 0) { %>
+                <% favoriteItems.forEach(item => { %>
+                    <div class="favorite-item">
+                        <div class="image-container" style="background-image: url('<%= item.image_url %>');"></div>
+                        <h3><a href="/product/<%= item.id_product %>"><%= item.name %></a></h3>
+                        <p>Price: <%= item.price %> <%= item.currency %></p>
+                        <form action="/favorites/remove" method="POST">
+                            <input type="hidden" name="productId" value="<%= item.id_product %>">
+                            <button type="submit">Remove</button>
+                        </form>
+                    </div>
+                <% }) %>
+            <% } else { %>
+                <p>Aucun article favori trouvé.</p>
+            <% } %>
+        </div>
+    </main>
     <%- include('partials/footer') %>
 </body>
 </html>
