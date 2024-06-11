@@ -5,6 +5,7 @@
     <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
+    <%- include('partials/header') %>
     <h1>Payment</h1>
     <form id="payment-form" action="/payment/processpayment" method="GET">
         <label for="cardNumber">Card Number:</label>
@@ -19,5 +20,6 @@
     <p><%= selectedAddress.address_line1 %>, <%= selectedAddress.address_line2 %>, <%= selectedAddress.city %>, <%= selectedAddress.state %>, <%= selectedAddress.postal_code %>, <%= selectedAddress.country %></p>
 
     <!-- Ici vous pouvez ajouter votre formulaire de paiement ou une redirection vers un fournisseur de paiement -->
+    <%- include('partials/footer') %>
 </body>
 </html>
