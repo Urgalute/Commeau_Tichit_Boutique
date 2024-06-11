@@ -6,6 +6,15 @@
 </head>
 <body>
     <h1>Payment</h1>
+    <form id="payment-form" action="/payment/processpayment" method="GET">
+        <label for="cardNumber">Card Number:</label>
+        <input type="text" name="cardNumber"><br>
+        <label for="cardExpiration">Expiration Date:</label>
+        <input type="text" name="cardExpiration"><br>
+        <label for="cardCvc">CVC:</label>
+        <input type="text" name="cardCvc"><br>
+        <input type="submit" value="Payer">
+    </form>
     <h2>Adresse de Livraison</h2>
     <p><%= selectedAddress.address_line1 %>, <%= selectedAddress.address_line2 %>, <%= selectedAddress.city %>, <%= selectedAddress.state %>, <%= selectedAddress.postal_code %>, <%= selectedAddress.country %></p>
 
