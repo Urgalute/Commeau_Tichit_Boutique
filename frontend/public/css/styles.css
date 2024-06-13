@@ -487,3 +487,22 @@ footer{
   display: flex;
   justify-content: center;
 }
+
+.confirm-purchase {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.confirm-purchase h1 {
+  color: white;
+}
+
+.confirm-purchase-accueil {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+  text-decoration: none;
+}
