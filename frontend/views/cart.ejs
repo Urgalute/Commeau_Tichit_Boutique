@@ -1,63 +1,58 @@
 <!DOCTYPE html>
 <html>
-
 <head>
     <title>Votre Panier</title>
     <link rel="stylesheet" href="/css/styles.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&display=swap" rel="stylesheet">
+    <style>
+        img {
+            max-width: 200px; /* Define a maximum width */
+            height: auto; /* Maintain aspect ratio */
+            display: block; /* Ensure the image is block-level */
+            margin: 0 auto; /* Center the image */
+        }
+    </style>
 </head>
-
 <body>
     <%- include('partials/header') %>
-        <main>
-            <a href="/">Continuer la shopping</a>
-            <h1 class="cart">Votre panier : </h1>
-            <div class="cart-list">
-                <% if (cartItems && cartItems.length> 0) { %>
-                    <% cartItems.forEach(item=> { %>
-                        <div class="cart-item">
-                            <div class="image-container" style="background-image: url('<%= item.image_url %>');"></div>
-                            <div class="corps">
-                                <p>Product: <%= item.name %>
-                                </p>
-                                <p>Size: <%= item.size %>
-                                </p>
-                                <p>Price: <%= item.price %>
-                                        <%= item.currency %>
-                                </p>
-                                <p>Quantity: <%= item.quantity %>
-                                </p>
-                                <div class="bouton">
-                                    <form action="/cart/remove" method="post">
-                                        <input type="hidden" name="productId" value="<%= item.id_product %>">
-                                        <input type="hidden" name="size" value="<%= item.size %>">
-                                        <button type="submit">Remove</button>
-                                    </form>
-                                    <div class="update">
-                                        <form action="/cart/update/<%= item.id_product %>" method="post">
-                                            <input type="hidden" name="productId" value="<%= item.id_product %>">
-                                            <input type="hidden" name="size" value="<%= item.size %>">
-                                            <input type="number" name="quantity" value="<%= item.quantity %>" min="1">
-                                            <button type="submit">Update</button>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
+    <main>
+        <h1>Your Cart</h1>
+        <ul>
+            <a href="/">Continue Shopping</a>
+            <h1>Your Cart</h1>
+            <ul>
+                <% if (cartItems && cartItems.length > 0) { %>
+                    <ul>
+                        <% cartItems.forEach(item => { %>
+                            <li>
+                                <div class="product-image" style="background-image: url('<%= item.image_url.split(',')[0] %>');"></div>
+                                <p>Product: <%= item.name %></p>
+                                <p>Size: <%= item.size %></p>
+                                <p>Price: <%= item.price %> <%= item.currency %></p>
+                                <p>Quantity: <%= item.quantity %></p>
+                                <form action="/cart/remove" method="post">
+                                    <input type="hidden" name="productId" value="<%= item.id_product %>">
+                                    <input type="hidden" name="size" value="<%= item.size %>">
+                                    <button type="submit">Remove</button>
+                                </form>
+                                <form action="/cart/update/<%= item.id_product %>" method="post">
+                                    <input type="hidden" name="productId" value="<%= item.id_product %>">
+                                    <input type="hidden" name="size" value="<%= item.size %>">
+                                    <input type="number" name="quantity" value="<%= item.quantity %>" min="1">
+                                    <button type="submit">Update</button>
+                                </form>
+                            </li>
                         <% }); %>
-                            <h2>Subtotal: <%= subtotal %> EUR</h2>
-                            <h2>Shipping: 5.90 EUR</h2>
-                            <h2>Total: <%= total %> EUR</h2>
-                            <a href="/cart/confirm">Valider mon panier</a>
-                            <% } else { %>
-                                <p>Your cart is empty</p>
-                                <% } %>
-            </div>
-        </main>
-        <%- include('partials/footer') %>
+                    </ul>
+                    <h2>Subtotal: <%= subtotal %> EUR</h2>
+                    <h2>Shipping: 5.90 EUR</h2>
+                    <h2>Total: <%= total %> EUR</h2>
+                    <a href="/cart/confirm">Valider mon panier</a>
+                <% } else { %>
+                    <p>Your cart is empty</p>
+                <% } %>
+            </ul>
+        </ul>
+    </main>
+    <%- include('partials/footer') %>
 </body>
-
 </html>
