@@ -2,7 +2,7 @@
 <html>
 <head>
     <title>Confirmation du Panier</title>
-    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/style.css">
     <style>
         img {
             max-width: 200px;
@@ -17,39 +17,45 @@
     <h1>Confirmation du Panier</h1>
     <ul>
         <% cartItems.forEach(item => { %>
-            <li>
-                <h2><%= item.name %></h2>
-                <p>Price: <%= item.price %> <%= item.currency %></p>
-                <p>Quantity: <%= item.quantity %></p>
-                <% if (item.image_url) { %>
-                    <img src="<%= item.image_url %>" alt="<%= item.name %>">
-                <% } %>
-            </li>
+            <div class="confirm-cart-item">
+                <div class="image-container" style="background-image: url('<%= item.image_url %>');"></div>
+                <div class="corps">
+                    <p>Product: <%= item.name %>
+                    </p>
+                    <p>Size: <%= item.size %>
+                    </p>
+                    <p>Price: <%= item.price %>
+                            <%= item.currency %>
+                    </p>
+                    <p>Quantity: <%= item.quantity %>
+                    </p>
+                </div>
+            </div>
         <% }) %>
     </ul>
 
-    <h2>Adresse de Livraison</h2>
+    <h2 class="text">Adresse de Livraison</h2>
     <form action="/cart/checkout" method="POST">
-        <h1>Ajouter une nouvelle adresse</h1>
-        <label for="address_line1">Address Line 1:</label>
+        <h1 class="text2">Ajouter une nouvelle adresse</h1>
+        <label for="address_line1">Ligne adresse 1 :</label>
         <input type="text" name="address_line1" required><br>
-        <label for="address_line2">Address Line 2:</label>
+        <label for="address_line2">Ligne adresse 2 :</label>
         <input type="text" name="address_line2"><br>
-        <label for="city">City:</label>
+        <label for="city">Ville :</label>
         <input type="text" name="city" required><br>
-        <label for="postal_code">Postal Code:</label>
+        <label for="postal_code">Code postal:</label>
         <input type="text" name="postal_code" required><br>
-        <button type="submit">Add Address</button>
+        <button class="boutons" type="submit">Ajouter mon adresse</button>
     </form>
 
-    <h2>Vos Adresses Enregistrées</h2>
+    <h2 class="text">Vos Adresses Enregistrées</h2>
     <ul>
         <% addresses.forEach((address, index) => { %>
             <li>
-                <p><%= address.address_line1 %>, <%= address.address_line2 %>, <%= address.city %>, <%= address.state %>, <%= address.postal_code %>, <%= address.country %></p>
-                <form action="/cart/validate-address" method="POST" style="display:inline;">
+                <p class="text"><%= address.address_line1 %>, <%= address.address_line2 %>, <%= address.city %>, <%= address.state %>, <%= address.postal_code %>, <%= address.country %></p>
+                <form class="confirm-adress" action="/cart/validate-address" method="POST">
                     <input type="hidden" name="selectedAddressIndex" value="<%= index %>">
-                    <button type="submit">Utiliser cette adresse</button>
+                    <button class="boutons" type="submit">Utiliser cette adresse</button>
                 </form>
             </li>
         <% }) %>

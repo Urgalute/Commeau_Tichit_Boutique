@@ -2,7 +2,7 @@
 <html>
 <head>
     <title>Payment</title>
-    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
     <%- include('partials/header') %>
@@ -16,10 +16,10 @@
         <input type="text" name="cardCvc"><br>
         <input type="submit" value="Payer">
     </form>
-    <h2>Adresse de Livraison</h2>
+    <h2 class="text">Adresse de Livraison</h2>
     <p><%= selectedAddress.address_line1 %>, <%= selectedAddress.address_line2 %>, <%= selectedAddress.city %>, <%= selectedAddress.state %>, <%= selectedAddress.postal_code %>, <%= selectedAddress.country %></p>
 
-    <!-- Ici vous pouvez ajouter votre formulaire de paiement ou une redirection vers un fournisseur de paiement -->
+    
     <%- include('partials/footer') %>
 </body>
 </html>
