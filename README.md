@@ -1,19 +1,19 @@
 Boutique:
 
 
-Table des matières
+Table des matières:
 
-Description
-Fonctionnalités
-Installation
-Utilisation
-Contributeurs
+Description.
+Fonctionnalités.
+Installation.
+Utilisation.
+Contributeurs.
 
 
-Description
+Description:
 Boutique est une application de commerce électronique permettant aux utilisateurs de parcourir, sélectionner et acheter des produits en ligne. Ce projet est conçu pour offrir une expérience utilisateur fluide et intuitive, avec une gestion complète du panier et des stocks.
 
-Fonctionnalités
+Fonctionnalités:
 Parcourir les produits : Les utilisateurs peuvent parcourir une liste de produits disponibles.
 Ajouter au panier : Les utilisateurs peuvent ajouter des produits à leur panier.
 Gestion du panier : Les utilisateurs peuvent voir les produits dans leur panier, ajuster les quantités et supprimer des articles.
@@ -22,7 +22,7 @@ Gestion du favoris : Les utilisateurs peuvent voir les produits dans leurs favor
 Validation du panier : Les utilisateurs peuvent valider et confirmer leur commande.
 Gestion des stocks : Le stock des produits est automatiquement mis à jour.
 
-Installation
+Installation:
 Prérequis
 Node.js
 npm
@@ -49,13 +49,13 @@ Lancez le serveur :
 
 npm start
 
-Utilisation
+Utilisation:
 
 Ouvrez votre navigateur et accédez à http://localhost:5000 pour voir la boutique en ligne.
 Parcourez les produits, ajoutez-en au panier et procédez à la validation de la commande.
 
 
-Contributeurs
+Contributeurs:
 Nom : Johan TICHIT et Yoan COMMEAU
 N'hésitez pas à proposer des améliorations en ouvrant des issues ou en soumettant des pull requests.
 
