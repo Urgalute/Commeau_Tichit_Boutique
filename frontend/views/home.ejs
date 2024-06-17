@@ -73,24 +73,29 @@
                 <div class="product-list">
                     <% products.forEach(product => { %>
                         <div class="product-item">
-                            <h3><a href="/product/<%= product.id_product %>" class="product-link"><%= product.name %></a></h3>
-                            <div class="product-image" style="background-image: url('<%= product.images.split(',')[0] %>');"></div>
-                            <% if (product.sizes && product.sizes.length > 0) { %>
-                                <form action="/cart/add/<%= product.id_product %>" method="POST">
-                                    <label for="size-<%= product.id_product %>">Taille :</label>
-                                    <select name="size" id="size-<%= product.id_product %>" onchange="updatePrice('<%= product.id_product %>', this.value)">
-                                        <% product.sizes.forEach(size => { %>
-                                            <option value="<%= size.label %>"><%= size.label %></option>
-                                        <% }) %>
-                                    </select>
+                        <h3><a href="/product/<%= product.id_product %>" class="product-link"><%= product.name %></a></h3>
+                        <div class="product-image" style="background-image: url('<%= product.images.split(',')[0] %>');"></div>
+                        <% if (product.sizes && product.sizes.length > 0) { %>
+                            <form action="/cart/add/<%= product.id_product %>" method="POST">
+                                <label for="size-<%= product.id_product %>">Taille :</label>
+                                <select name="size" id="size-<%= product.id_product %>" onchange="updatePrice('<%= product.id_product %>', this.value)">
+                                    <% product.sizes.forEach(size => { %>
+                                        <option value="<%= size.label %>"><%= size.label %></option>
+                                    <% }) %>
+                                </select>
+                                <% if (product.promotion) { %>
+                                    <p>Prix promotionnel : <span id="price-<%= product.id_product %>"><%= product.promotional_price %> <%= product.currency %></span></p>
+                                    <p><s>Prix original : <%= product.price %> <%= product.currency %></s></p>
+                                <% } else { %>
                                     <p>Prix : <span id="price-<%= product.id_product %>"><%= product.price %> <%= product.currency %></span></p>
-                                    <button type="submit" class="button-common">Ajouter au panier</button>
-                                </form>
-                            <% } else { %>
-                                <p>No sizes available</p>
-                            <% } %>
-                            <button class="add-to-favorites button-common" data-id="<%= product.id_product %>">Ajouter aux favoris</button>
-                        </div>
+                                <% } %>
+                                <button type="submit" class="button-common">Ajouter au panier</button>
+                            </form>
+                        <% } else { %>
+                            <p>No sizes available</p>
+                        <% } %>
+                        <button class="add-to-favorites button-common" data-id="<%= product.id_product %>">Ajouter aux favoris</button>
+                    </div>
                     <% }) %>
                 </div>
         

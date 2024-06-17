@@ -111,7 +111,7 @@ input[type="password"] {
 .product-item {
   padding-right: 15px;
   width: 350px;
-  height: 600px;
+  height: 650px;
   background-color: #f7e1cd;
   padding: 15px;
   border-radius: 8px;
@@ -656,3 +656,4 @@ input[type="number" i] {
   margin-left: 0px;
   padding-left: 0px;
 }
+
