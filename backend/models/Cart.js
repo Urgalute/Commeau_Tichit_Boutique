@@ -21,7 +21,7 @@ exports.removeFromCart = (cartId, callback) => {
     db.query(query, [cartId], callback);
 };
 
-exports.updateStocks = (cart, callback) => {
+const updateStocks = async (cart) => {
     const aggregatedCart = cart.reduce((acc, item) => {
         const { productId, quantity } = item;
         if (!acc[productId]) {
@@ -31,50 +31,40 @@ exports.updateStocks = (cart, callback) => {
         return acc;
     }, {});
 
-    let itemsProcessed = 0;
-    let errorOccurred = false;
     const productIds = Object.keys(aggregatedCart);
 
-    productIds.forEach(productId => {
-        const totalQuantity = aggregatedCart[productId];
-        const selectQuery = 'SELECT stock FROM product WHERE id_product = ?';
+    const connection = await db.getConnection(); // Assuming you're using a connection pool
+    try {
+        await connection.beginTransaction();
 
-        db.query(selectQuery, [productId], (error, results) => {
-            if (error) {
-                if (!errorOccurred) {
-                    errorOccurred = true;
-                    return callback(error);
-                }
-            }
+        for (const productId of productIds) {
+            const totalQuantity = aggregatedCart[productId];
+            const [results] = await connection.query('SELECT stock FROM product WHERE id_product = ?', [productId]);
 
             if (results.length > 0) {
                 const currentStock = results[0].stock;
+                
+                // Vérifier si le stock est suffisant
+                if (totalQuantity > currentStock) {
+                    throw new Error(`Stock insuffisant pour le produit ${productId}. Stock disponible: ${currentStock}, Quantité demandée: ${totalQuantity}`);
+                }
+
                 const newStock = Math.max(0, currentStock - totalQuantity);
                 console.log(`Produit ${productId}, Stock actuel: ${currentStock}, Nouveau stock: ${newStock}`);
-                const updateQuery = 'UPDATE product SET stock = ? WHERE id_product = ?';
 
-                db.query(updateQuery, [newStock, productId], (error, results) => {
-                    if (error) {
-                        if (!errorOccurred) {
-                            errorOccurred = true;
-                            return callback(error);
-                        }
-                    }
-
-                    console.log(`Stock mis à jour pour le produit ${productId}`);
-                    itemsProcessed++;
-                    if (itemsProcessed === productIds.length && !errorOccurred) {
-                        callback(null);
-                    }
-                });
+                await connection.query('UPDATE product SET stock = ? WHERE id_product = ?', [newStock, productId]);
+                console.log(`Stock mis à jour pour le produit ${productId}`);
             } else {
                 console.error(`Produit ${productId} non trouvé dans le stock`);
-
-                itemsProcessed++;
-                if (itemsProcessed === productIds.length && !errorOccurred) {
-                    callback(null);
-                }
             }
-        });
-    });
+        }
+
+        await connection.commit();
+        connection.release();
+        return null; // Success
+    } catch (error) {
+        await connection.rollback();
+        connection.release();
+        throw error; // Propagate error
+    }
 };
