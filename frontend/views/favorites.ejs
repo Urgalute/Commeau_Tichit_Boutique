@@ -2,7 +2,7 @@
 <html>
 <head>
     <title>Mes Favoris</title>
-    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&display=swap" rel="stylesheet">
@@ -18,6 +18,7 @@
 <body>
     <%- include('partials/header') %>
     <main>
+        <a class="boutons" href="/">Continuer le shopping</a>
         <h1 class="favorites">Liste des favoris :</h1>
         <div class="favorites-list">
             <% if (favoriteItems.length > 0) { %>

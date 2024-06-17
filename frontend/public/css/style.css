@@ -11,6 +11,7 @@ body {
   background-size: cover; 
   background-repeat: no-repeat; 
   background-position: center center;
+  min-height: 600px;
 }
 
 .header{
@@ -40,6 +41,7 @@ ul.header{
 }
 
 h1 {
+  color: white;
   text-align: center;
 }
 
@@ -109,7 +111,7 @@ input[type="password"] {
 .product-item {
   padding-right: 15px;
   width: 350px;
-  height: 650px;
+  height: 600px;
   background-color: #f7e1cd;
   padding: 15px;
   border-radius: 8px;
@@ -257,9 +259,6 @@ button:hover {
   height: auto;
 }
 
-.product-item {
-  height: 750px;
-}
 
 .image-detail {
   display: flex;
@@ -457,8 +456,7 @@ button:hover {
 }
 
 .favorites-list button {
-  margin-left: 35px;
-  margin-left: 110px;
+  margin-left: 30px;
   width: 160px;
   background-color: #f8d5a3;
   color: black;
@@ -503,22 +501,24 @@ footer{
   margin-right: 20px;
   margin-top: 30px;
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: 20px;
   justify-content:center;
 }
 
 .cart-item {
-  width: calc(20% - 20px);
+  width: 800px;
+  height: 230px;
   text-align: center;
   background: #f7e1cd;
   padding: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   justify-content: space-between;
+  align-items: center;
   border-radius: 8px;
-  height: 600px;
+
 }
 
 .cart-item h3 {
@@ -527,8 +527,8 @@ footer{
 }
 
 .cart-item .image-container {
-  width: 100%;
-  height: 400px;
+  width: 200px;
+  height: 200px;
   background-size: cover;
   background-position: center;
   margin-bottom: 10px;
@@ -582,13 +582,77 @@ input[type="number" i] {
 }
 
 .corps{
+  width: 600px;
   display: flex;
-  flex-direction: column;
+  flex-direction:row;
   align-items: center;
+  justify-content: space-evenly;
 }
 
 .bouton{
   display: flex;
   align-items: center;
   flex-direction: column;
+}
+
+.prix{
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  color: white;
+}
+
+.boutons{
+  margin-left: 35px;
+  width: 160px;
+  background-color: #f8d5a3;
+  color: black;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+  display: flex;
+  justify-content: center;
+}
+
+.boutons:hover {
+  background-color: #f4ac78;
+}
+
+.confirm-cart-item {
+  width: 800px;
+  height: 230px;
+  text-align: center;
+  background: #f7e1cd;
+  padding: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 8px;
+}
+
+.confirm-cart-item .image-container {
+  width: 200px;
+  height: 200px;
+  background-size: cover;
+  background-position: center;
+  margin-bottom: 10px;
+}
+
+.text{
+  color: white;
+}
+
+.text2{
+  color: black;
+}
+
+
+
+.confirm-adress{
+  margin-left: 0px;
+  padding-left: 0px;
 }

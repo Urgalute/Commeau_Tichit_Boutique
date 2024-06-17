@@ -3,7 +3,7 @@
 
 <head>
     <title>Votre Panier</title>
-    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&display=swap" rel="stylesheet">
@@ -12,8 +12,8 @@
 <body>
     <%- include('partials/header') %>
         <main>
-            <a href="/">Continuer la shopping</a>
-            <h1 class="cart">Votre panier : </h1>
+            <a class="boutons" href="/">Continuer le shopping</a>
+            <h1 class="cart">Votre panier :</h1>
             <div class="cart-list">
                 <% if (cartItems && cartItems.length> 0) { %>
                     <% cartItems.forEach(item=> { %>
@@ -45,17 +45,19 @@
                                     </div>
                                 </div>
                             </div>
-
                         </div>
                         <% }); %>
-                            <h2>Subtotal: <%= subtotal %> EUR</h2>
-                            <h2>Shipping: 5.90 EUR</h2>
-                            <h2>Total: <%= total %> EUR</h2>
-                            <a href="/cart/confirm">Valider mon panier</a>
-                            <% } else { %>
-                                <p>Your cart is empty</p>
-                                <% } %>
             </div>
+            <div class="prix">
+                <h2>Subtotal: <%= subtotal %> EUR</h2>
+                <h2>Shipping: 5.90 EUR</h2>
+                <h2>Total: <%= total %> EUR</h2>
+                <a class="boutons" href="/cart/confirm">Valider mon panier</a>
+            </div>
+            <% } else { %>
+                <p>Your cart is empty</p>
+                <% } %>
+                    </div>
         </main>
         <%- include('partials/footer') %>
 </body>
